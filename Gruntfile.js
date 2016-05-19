@@ -83,6 +83,7 @@ module.exports = function(grunt) {
 
           "<%= bb.src %>/parsers/ccdar2.js",
           "<%= bb.src %>/parsers/ccdar2/document.js",
+          "<%= bb.src %>/parsers/ccdar2/health_concerns.js",
 
           "<%= bb.src %>/renderers.js",
           "<%= bb.src %>/renderers/c32.js",
