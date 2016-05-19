@@ -44,6 +44,7 @@ module.exports = function(grunt) {
           "<%= bb.src %>/documents.js",
           "<%= bb.src %>/documents/c32.js",
           "<%= bb.src %>/documents/ccda.js",
+          "<%= bb.src %>/documents/ccdar2.js",
           
           "<%= bb.src %>/generators.js",
           "<%= bb.src %>/generators/c32.js",
@@ -79,7 +80,10 @@ module.exports = function(grunt) {
           "<%= bb.src %>/parsers/ccda/procedures.js",
           "<%= bb.src %>/parsers/ccda/smoking_status.js",
           "<%= bb.src %>/parsers/ccda/vitals.js",
-          
+
+          "<%= bb.src %>/parsers/ccdar2.js",
+          "<%= bb.src %>/parsers/ccdar2/document.js",
+
           "<%= bb.src %>/renderers.js",
           "<%= bb.src %>/renderers/c32.js",
           "<%= bb.src %>/renderers/ccda.js",
