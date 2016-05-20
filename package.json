@@ -63,6 +63,9 @@
     "grunt-jasmine-node": "~0.2.1",
     "grunt-template-jasmine-requirejs": "~0.1.10",
     "grunt-umd": "~1.7.3",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-jasmine": "^1.0.2",
     "matchdep": "~0.3.0",
     "underscore": "~1.7"
   },
