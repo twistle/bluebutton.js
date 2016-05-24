@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1053550a-bb6e-4790-ae6d-e2dd6a03ee6d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/parsers/c32/problems.js" afterPath="$PROJECT_DIR$/lib/parsers/c32/problems.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/parsers/ccda/problems.js" afterPath="$PROJECT_DIR$/lib/parsers/ccda/problems.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/parsers/c32/procedures.js" afterPath="$PROJECT_DIR$/lib/parsers/c32/procedures.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/parsers/ccda/procedures.js" afterPath="$PROJECT_DIR$/lib/parsers/ccda/procedures.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/parsers/c32/results.js" afterPath="$PROJECT_DIR$/lib/parsers/c32/results.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/parsers/ccda/results.js" afterPath="$PROJECT_DIR$/lib/parsers/ccda/results.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/parsers/c32/vitals.js" afterPath="$PROJECT_DIR$/lib/parsers/c32/vitals.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/parsers/ccda/vitals.js" afterPath="$PROJECT_DIR$/lib/parsers/ccda/vitals.js" />
     </list>
     <ignored path="bluebutton.js.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,48 +29,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="immunizations.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/parsers/c32/immunizations.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.222222">
-              <caret line="21" column="54" selection-start-line="9" selection-start-column="2" selection-end-line="21" selection-end-column="54" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="allergies.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/parsers/c32/allergies.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="12" column="13" selection-start-line="9" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="immunizations.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/immunizations.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-8.148149">
-              <caret line="79" column="16" selection-start-line="79" selection-start-column="16" selection-end-line="79" selection-end-column="16" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="medications.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/parsers/c32/medications.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-8.814815">
-              <caret line="14" column="2" selection-start-line="7" selection-start-column="2" selection-end-line="14" selection-end-column="2" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -111,11 +75,59 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="procedures.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="procedures.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/procedures.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4">
+            <state vertical-scroll-proportion="-25.777779">
               <caret line="42" column="47" selection-start-line="42" selection-start-column="47" selection-end-line="42" selection-end-column="47" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="results.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/parsers/c32/results.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-9.444445">
+              <caret line="15" column="40" selection-start-line="11" selection-start-column="2" selection-end-line="15" selection-end-column="40" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="results.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/results.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-4.6296296">
+              <caret line="9" column="40" selection-start-line="9" selection-start-column="2" selection-end-line="9" selection-end-column="40" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="vitals.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/vitals.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-9.444445">
+              <caret line="15" column="39" selection-start-line="9" selection-start-column="3" selection-end-line="15" selection-end-column="39" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="vitals.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/lib/parsers/c32/vitals.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.8717949">
+              <caret line="50" column="4" selection-start-line="50" selection-start-column="4" selection-end-line="50" selection-end-column="4" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -127,7 +139,7 @@
         <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/problems.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-8.814815">
-              <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+              <caret line="16" column="41" selection-start-line="10" selection-start-column="1" selection-end-line="16" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -165,6 +177,10 @@
         <option value="$PROJECT_DIR$/lib/parsers/c32/problems.js" />
         <option value="$PROJECT_DIR$/lib/parsers/c32/procedures.js" />
         <option value="$PROJECT_DIR$/lib/parsers/ccda/procedures.js" />
+        <option value="$PROJECT_DIR$/lib/parsers/c32/results.js" />
+        <option value="$PROJECT_DIR$/lib/parsers/ccda/results.js" />
+        <option value="$PROJECT_DIR$/lib/parsers/ccda/vitals.js" />
+        <option value="$PROJECT_DIR$/lib/parsers/c32/vitals.js" />
       </list>
     </option>
   </component>
@@ -471,38 +487,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lib/parsers/ccdar2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/documents/ccdar2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="8" selection-start-line="19" selection-start-column="8" selection-end-line="19" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/problems.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/documents/ccda.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="62" column="18" selection-start-line="59" selection-start-column="6" selection-end-line="62" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/spec/javascripts/browser_specs/bluebutton_spec.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -854,6 +838,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/procedures.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-25.777779">
+          <caret line="42" column="47" selection-start-line="42" selection-start-column="47" selection-end-line="42" selection-end-column="47" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/parsers/c32/procedures.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-9.444445">
@@ -867,15 +861,45 @@
     <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/problems.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-8.814815">
-          <caret line="16" column="22" selection-start-line="16" selection-start-column="22" selection-end-line="16" selection-end-column="22" />
+          <caret line="16" column="41" selection-start-line="10" selection-start-column="1" selection-end-line="16" selection-end-column="41" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/procedures.js">
+    <entry file="file://$PROJECT_DIR$/lib/parsers/c32/results.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4">
-          <caret line="42" column="47" selection-start-line="42" selection-start-column="47" selection-end-line="42" selection-end-column="47" />
+        <state vertical-scroll-proportion="-9.444445">
+          <caret line="15" column="40" selection-start-line="11" selection-start-column="2" selection-end-line="15" selection-end-column="40" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/results.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.6296296">
+          <caret line="9" column="40" selection-start-line="9" selection-start-column="2" selection-end-line="9" selection-end-column="40" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/parsers/ccda/vitals.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.444445">
+          <caret line="15" column="39" selection-start-line="9" selection-start-column="3" selection-end-line="15" selection-end-column="39" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/parsers/c32/vitals.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8717949">
+          <caret line="50" column="4" selection-start-line="50" selection-start-column="4" selection-end-line="50" selection-end-column="4" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
