@@ -43,11 +43,13 @@
   },
   "scripts": {
     "build": "grunt",
+    "postinstall": "postinstall-build-yarn build/bluebutton.js",
     "test": "grunt test"
   },
   "dependencies": {
-    "xmldom": "~0.1.19",
-    "ejs": "^1.0.0"
+    "ejs": "^1.0.0",
+    "postinstall-build-yarn": "^0.0.2",
+    "xmldom": "~0.1.19"
   },
   "devDependencies": {
     "bower": "*",
