@@ -42,34 +42,17 @@
     "url": "git://github.com/blue-button/bluebutton.js.git"
   },
   "scripts": {
-    "build": "grunt",
-    "postinstall": "postinstall-build-yarn build/bluebutton.js",
+    "build": "webpack",
     "test": "grunt test"
   },
   "dependencies": {
     "ejs": "^1.0.0",
-    "postinstall-build-yarn": "^0.0.2",
     "xmldom": "~0.1.19"
   },
   "devDependencies": {
-    "bower": "*",
-    "grunt": "~0.4.0",
-    "grunt-cli": "^1.2.0",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-concat": "~0.4.0",
-    "grunt-contrib-copy": "~0.5.0",
-    "grunt-contrib-jasmine": "~0.5.3",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-uglify": "~0.4.0",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-jasmine-node": "~0.2.1",
-    "grunt-template-jasmine-requirejs": "~0.1.10",
-    "grunt-umd": "~1.7.3",
-    "karma": "^0.13.22",
-    "karma-chrome-launcher": "^1.0.1",
-    "karma-jasmine": "^1.0.2",
-    "matchdep": "~0.3.0",
-    "underscore": "~1.7"
+    "webpack": "^3.8.1",
+    "webpack-fix-default-import-plugin": "^1.0.3",
+    "webpack-node-externals": "^1.6.0"
   },
   "engines": {
     "node": ">=0.10.0"
