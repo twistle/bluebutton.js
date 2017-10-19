@@ -100,11 +100,13 @@ __webpack_require__(8)
 __webpack_require__(9)
 
 __webpack_require__(10)
+__webpack_require__(11)
 __webpack_require__(12)
+//require('./ccda_template.ejs')
+
 __webpack_require__(13)
 
 __webpack_require__(14)
-
 __webpack_require__(15)
 __webpack_require__(16)
 __webpack_require__(17)
@@ -115,8 +117,8 @@ __webpack_require__(21)
 __webpack_require__(22)
 __webpack_require__(23)
 __webpack_require__(24)
-__webpack_require__(25)
 
+__webpack_require__(25)
 __webpack_require__(26)
 __webpack_require__(27)
 __webpack_require__(28)
@@ -138,9 +140,8 @@ __webpack_require__(43)
 __webpack_require__(44)
 __webpack_require__(45)
 __webpack_require__(46)
-__webpack_require__(47)
 
-__webpack_require__(48)
+__webpack_require__(47)
 //require('./renderers/c32.js')
 //require('./renderers/ccda.js')
 
@@ -1785,7 +1786,7 @@ Documents.CCD = (function () {
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
 /*
  * ...
@@ -1798,9 +1799,9 @@ var Generators = (function () {
 
   /* Import ejs if we're in Node. Then setup custom formatting filters
    */
-  if (true) {
+  /*if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports) {
-      ejs = __webpack_require__(11);
+      ejs = require("ejs");
     }
   }
 
@@ -1808,7 +1809,7 @@ var Generators = (function () {
     /* Filters are automatically available to ejs to be used like "... | hl7Date"
      * Helpers are functions that we'll manually pass in to ejs.
      * The intended distinction is that a helper gets called with regular function-call syntax
-     */
+     */ /*
     var pad = function(number) {
       if (number < 10) {
         return '0' + number;
@@ -1940,7 +1941,7 @@ var Generators = (function () {
       return tags;
     };
 
-  }
+  }*/
   
   return {
     method: method
@@ -1951,12 +1952,6 @@ var Generators = (function () {
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports) {
-
-module.exports = require("ejs");
-
-/***/ }),
-/* 12 */
 /***/ (function(module, exports) {
 
 /*
@@ -1982,7 +1977,7 @@ Generators.C32 = (function () {
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports) {
 
 /*
@@ -2033,7 +2028,7 @@ Generators.CCDA = (function () {
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports) {
 
 /*
@@ -2053,7 +2048,7 @@ var Parsers = (function () {
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /*
@@ -2129,7 +2124,7 @@ Parsers.C32 = (function () {
 
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports) {
 
 /*
@@ -2278,7 +2273,7 @@ Parsers.C32.document = function (c32) {
 
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /*
@@ -2396,7 +2391,7 @@ Parsers.C32.allergies = function (c32) {
 
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports) {
 
 /*
@@ -2500,7 +2495,7 @@ Parsers.C32.demographics = function (c32) {
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports) {
 
 /*
@@ -2595,7 +2590,7 @@ Parsers.C32.encounters = function (c32) {
 
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports) {
 
 /*
@@ -2722,7 +2717,7 @@ Parsers.C32.immunizations = function (c32) {
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /*
@@ -2844,7 +2839,7 @@ Parsers.C32.results = function (c32) {
 
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports) {
 
 /*
@@ -3045,7 +3040,7 @@ Parsers.C32.medications = function (c32) {
 
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports) {
 
 /*
@@ -3127,7 +3122,7 @@ Parsers.C32.problems = function (c32) {
 
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports) {
 
 /*
@@ -3205,7 +3200,7 @@ Parsers.C32.procedures = function (c32) {
 
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports) {
 
 /*
@@ -3270,7 +3265,7 @@ Parsers.C32.vitals = function (c32) {
 
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports) {
 
 /*
@@ -3331,7 +3326,7 @@ Parsers.CCDA = (function () {
 
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports) {
 
 /*
@@ -3475,7 +3470,7 @@ Parsers.CCDA.document = function (ccda) {
 
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /*
@@ -3585,7 +3580,7 @@ Parsers.CCDA.allergies = function (ccda) {
 
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports) {
 
 /*
@@ -3650,7 +3645,7 @@ Parsers.CCDA.care_plan = function (ccda) {
 
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports) {
 
 /*
@@ -3755,7 +3750,7 @@ Parsers.CCDA.demographics = function (ccda) {
 
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports) {
 
 /*
@@ -3848,7 +3843,7 @@ Parsers.CCDA.encounters = function (ccda) {
 
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports) {
 
 /*
@@ -3871,7 +3866,7 @@ Parsers.CCDA.free_text = function (ccda, sectionName) {
 
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports) {
 
 /*
@@ -3914,7 +3909,7 @@ Parsers.CCDA.functional_statuses = function (ccda) {
 
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports) {
 
 /*
@@ -4039,7 +4034,7 @@ Parsers.CCDA.immunizations = function (ccda) {
 
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports) {
 
 /*
@@ -4077,7 +4072,7 @@ Parsers.CCDA.instructions = function (ccda) {
 
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports) {
 
 /*
@@ -4188,7 +4183,7 @@ Parsers.CCDA.results = function (ccda) {
 
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports) {
 
 /*
@@ -4375,7 +4370,7 @@ Parsers.CCDA.medications = function (ccda) {
 
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports) {
 
 /*
@@ -4452,7 +4447,7 @@ Parsers.CCDA.problems = function (ccda) {
 
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports) {
 
 /*
@@ -4530,7 +4525,7 @@ Parsers.CCDA.procedures = function (ccda) {
 
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports) {
 
 /*
@@ -4594,7 +4589,7 @@ Parsers.CCDA.smoking_status = function (ccda) {
 
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports) {
 
 /*
@@ -4657,7 +4652,7 @@ Parsers.CCDA.vitals = function (ccda) {
 
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports) {
 
 /* Parses out basic data about each section */
@@ -4717,7 +4712,7 @@ Parsers.GenericInfo = function (ccda, data) {
 };
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports) {
 
 /*
@@ -4749,7 +4744,7 @@ Parsers.CCDAR2 = (function () {
 
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports) {
 
 /*
@@ -4892,7 +4887,7 @@ Parsers.CCDAR2.document = function (ccda) {
 
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports) {
 
 /*
@@ -4980,7 +4975,7 @@ Parsers.CCDAR2.health_concerns_document = function (ccda) {
 
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports) {
 
 /*
@@ -5012,7 +5007,7 @@ Parsers.CCD = (function () {
 
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports) {
 
 /*
@@ -5155,7 +5150,7 @@ Parsers.CCD.document = function (ccda) {
 
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports) {
 
 /*

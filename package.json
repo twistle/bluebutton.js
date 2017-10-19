@@ -46,7 +46,6 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "ejs": "^1.0.0",
     "xmldom": "~0.1.19"
   },
   "devDependencies": {
