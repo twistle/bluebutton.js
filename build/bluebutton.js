@@ -91,7 +91,7 @@ exports["bluebutton"] =
 
 var Codes = __webpack_require__(6);
 var XML = __webpack_require__(7);
-var { stripWhitespace } = __webpack_require__(3);
+var stripWhitespace = __webpack_require__(3).stripWhitespace;
 
 /* exported Core */
   
