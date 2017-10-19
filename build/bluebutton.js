@@ -516,45 +516,6 @@ var Generators = __webpack_require__(14);
 
 var Parsers = __webpack_require__(18);
 
-/*require('./parsers/c32.js')
-require('./parsers/c32/document.js')
-require('./parsers/c32/allergies.js')
-require('./parsers/c32/demographics.js')
-require('./parsers/c32/encounters.js')
-require('./parsers/c32/immunizations.js')
-require('./parsers/c32/results.js')
-require('./parsers/c32/medications.js')
-require('./parsers/c32/problems.js')
-require('./parsers/c32/procedures.js')
-require('./parsers/c32/vitals.js')
-
-require('./parsers/ccda.js')
-require('./parsers/ccda/document.js')
-require('./parsers/ccda/allergies.js')
-require('./parsers/ccda/care_plan.js')
-require('./parsers/ccda/demographics.js')
-require('./parsers/ccda/encounters.js')
-require('./parsers/ccda/free_text.js')
-require('./parsers/ccda/functional_statuses.js')
-require('./parsers/ccda/immunizations.js')
-require('./parsers/ccda/instructions.js')
-require('./parsers/ccda/results.js')
-require('./parsers/ccda/medications.js')
-require('./parsers/ccda/problems.js')
-require('./parsers/ccda/procedures.js')
-require('./parsers/ccda/smoking_status.js')
-require('./parsers/ccda/vitals.js')
-require('./parsers/generic.js')
-require('./parsers/ccdar2.js')
-require('./parsers/ccdar2/document.js')
-require('./parsers/ccdar2/health_concerns.js')
-require('./parsers/ccd.js')
-require('./parsers/ccd/document.js')
-
-require('./renderers.js')
-//require('./renderers/c32.js')
-//require('./renderers/ccda.js')
-
 
 /* exported BlueButton */
 module.exports = function (source, opts) {
