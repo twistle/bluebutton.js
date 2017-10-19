@@ -42,10 +42,11 @@
     "url": "git://github.com/blue-button/bluebutton.js.git"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --display-modules",
     "test": "grunt test"
   },
   "dependencies": {
+    "lodash": "^4.17.4",
     "xmldom": "~0.1.19"
   },
   "devDependencies": {
