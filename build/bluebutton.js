@@ -2346,11 +2346,13 @@ module.exports = function(doc) {
 
 /***/ }),
 /* 20 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*
  * Parser for the C32 allergies section
  */
+
+var Core = __webpack_require__(0);
 
 module.exports = function(doc) {
   var self = this;
@@ -2469,11 +2471,13 @@ module.exports = function(doc) {
 
 /***/ }),
 /* 21 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*
  * Parser for the C32 demographics section
  */
+
+var Core = __webpack_require__(0);
 
 module.exports = function(doc) {
   var self = this;
@@ -2578,11 +2582,13 @@ module.exports = function(doc) {
 
 /***/ }),
 /* 22 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*
  * Parser for the C32 document section
  */
+
+var Core = __webpack_require__(0);
 
 module.exports = function(doc) {
   var self = this;
@@ -2833,11 +2839,12 @@ module.exports = function(doc) {
 
 /***/ }),
 /* 24 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*
  * Parser for the C32 immunizations section
  */
+var Core = __webpack_require__(0);
 
 module.exports = function(doc) {
   var self = this;
@@ -3826,11 +3833,13 @@ module.exports = function(doc) {
 
 /***/ }),
 /* 33 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*
  * Parser for the CCDA allergies section
  */
+
+var Core = __webpack_require__(0);
 
 module.exports = function(doc) {
   var self = this;
@@ -4508,11 +4517,13 @@ module.exports = function() {
 
 /***/ }),
 /* 41 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /*
  * Parser for the CCDA medications section
  */
+
+var Core = __webpack_require__(0);
 
 module.exports = function (doc) {
   var self = this;
