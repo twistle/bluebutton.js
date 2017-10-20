@@ -105,7 +105,7 @@ module.exports = {
 /*
   * ...
   */
-var parseData = function (source) {
+function parseData(source) {
   source = stripWhitespace(source);
   
   if (source.charAt(0) === '<') {
@@ -137,7 +137,7 @@ var parseData = function (source) {
   *        JavaScript/Guide/Using_native_JSON#The_replacer_parameter
   * for documentation on the replacerFn.
   */
-var json = function () {
+function json() {
 
   var datePad = function(number) {
     if (number < 10) {
@@ -204,7 +204,7 @@ var json = function () {
 /*
   * Removes all `null` properties from an object.
   */
-var trim = function (o) {
+function trim(o) {
   var y;
   for (var x in o) {
     if (o.hasOwnProperty(x)) {
@@ -398,7 +398,7 @@ module.exports = {
   stripWhitespace: stripWhitespace
 }
 
-var stripWhitespace = function (str) {
+function stripWhitespace (str) {
     if (!str) { return str; }
     return str.replace(/^\s+|\s+$/g,'');
 };
@@ -1116,7 +1116,7 @@ module.exports =  {
 /*
  * ...
  */
-  
+
 /*
   * A function used to wrap DOM elements in an object so methods can be added
   * to the element object. IE8 does not allow methods to be added directly to
@@ -1383,7 +1383,7 @@ var isEmpty = function () {
 /*
   * Cross-browser XML parsing supporting IE8+ and Node.js.
   */
-var parse = function (data) {
+function parse(data) {
   // XML data must be a string
   if (!data || typeof data !== "string") {
     console.log("BB Error: XML data is not a string");
@@ -1441,11 +1441,9 @@ if (true) {
   }
 }
 
-
 module.exports = {
   parse: parse
 };
-
 
 /***/ }),
 /* 8 */
