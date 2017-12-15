@@ -85,15 +85,22 @@ exports["bluebutton"] =
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 /*
  * ...
  */
 
 var Codes = __webpack_require__(6);
 var XML = __webpack_require__(7);
-var { stripWhitespace } = __webpack_require__(3);
+
+var _require = __webpack_require__(3),
+    stripWhitespace = _require.stripWhitespace;
 
 /* exported Core */
+
+
 module.exports = {
   parseData: parseData,
   stripWhitespace: stripWhitespace,
@@ -107,7 +114,7 @@ module.exports = {
   */
 function parseData(source) {
   source = stripWhitespace(source);
-  
+
   if (source.charAt(0) === '<') {
     try {
       return XML.parse(source);
@@ -122,9 +129,7 @@ function parseData(source) {
     return JSON.parse(source);
   } catch (e) {
     if (console.error) {
-      console.error("Error: Cannot parse this file. BB.js only accepts valid XML " +
-        "(for parsing) or JSON (for generation). If you are attempting to provide " +
-        "XML or JSON, please run your data through a validator to see if it is malformed.\n");
+      console.error("Error: Cannot parse this file. BB.js only accepts valid XML " + "(for parsing) or JSON (for generation). If you are attempting to provide " + "XML or JSON, please run your data through a validator to see if it is malformed.\n");
     }
     throw e;
   }
@@ -139,14 +144,14 @@ function parseData(source) {
   */
 function json() {
 
-  var datePad = function(number) {
+  var datePad = function datePad(number) {
     if (number < 10) {
       return '0' + number;
     }
     return number;
   };
-  
-  var replacerFn = function(key, value) {
+
+  var replacerFn = function replacerFn(key, value) {
     /* By default, Dates are output as ISO Strings like "2014-01-03T08:00:00.000Z." This is
       * tricky when all we have is a date (not a datetime); JS sadly ignores that distinction.
       *
@@ -168,38 +173,26 @@ function json() {
       */
     var originalValue = this[key]; // a Date
 
-    if ( value && (originalValue instanceof Date) && !isNaN(originalValue.getTime()) ) {
+    if (value && originalValue instanceof Date && !isNaN(originalValue.getTime())) {
 
       // If while parsing we indicated that there was time-data specified, or if we see
       // non-zero values in the hour/minutes/seconds/millis fields, output a datetime.
-      if (originalValue._parsedWithTimeData ||
-          originalValue.getHours() || originalValue.getMinutes() ||
-          originalValue.getSeconds() || originalValue.getMilliseconds()) {
+      if (originalValue._parsedWithTimeData || originalValue.getHours() || originalValue.getMinutes() || originalValue.getSeconds() || originalValue.getMilliseconds()) {
 
         // Based on https://developer.mozilla.org/en-US/docs/Web/JavaScript/
         //    Reference/Global_Objects/Date/toISOString
-        return originalValue.getUTCFullYear() +
-          '-' + datePad( originalValue.getUTCMonth() + 1 ) +
-          '-' + datePad( originalValue.getUTCDate() ) +
-          'T' + datePad( originalValue.getUTCHours() ) +
-          ':' + datePad( originalValue.getUTCMinutes() ) +
-          ':' + datePad( originalValue.getUTCSeconds() ) +
-          'Z';
+        return originalValue.getUTCFullYear() + '-' + datePad(originalValue.getUTCMonth() + 1) + '-' + datePad(originalValue.getUTCDate()) + 'T' + datePad(originalValue.getUTCHours()) + ':' + datePad(originalValue.getUTCMinutes()) + ':' + datePad(originalValue.getUTCSeconds()) + 'Z';
       }
-      
-      // We just have a pure date
-      return datePad( originalValue.getMonth() + 1 ) +
-        '/' + datePad( originalValue.getDate() ) +
-        '/' + originalValue.getFullYear();
 
+      // We just have a pure date
+      return datePad(originalValue.getMonth() + 1) + '/' + datePad(originalValue.getDate()) + '/' + originalValue.getFullYear();
     }
 
     return value;
   };
-  
+
   return JSON.stringify(this, replacerFn, 2);
 };
-
 
 /*
   * Removes all `null` properties from an object.
@@ -219,28 +212,30 @@ function trim(o) {
   return o;
 };
 
-
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /* Parses out basic data about each section */
 
 module.exports = function (ccda, data) {
 
-    var each = function (callback) {
+    var each = function each(callback) {
         for (var i = 0; i < this.length; i++) {
             callback(this[i]);
         }
     };
 
-    var containsTemplateId = function(templateId, data) {
+    var containsTemplateId = function containsTemplateId(templateId, data) {
         for (var property in data) {
             if (data.hasOwnProperty(property)) {
                 var p = data[property].templateId;
                 //var display = this[property].displayName;
-                if(p) {
-                    if(p === templateId) {
+                if (p) {
+                    if (p === templateId) {
                         //console.log("TemplateId Match " + templateId + " " + display);
                         return true;
                     }
@@ -253,10 +248,10 @@ module.exports = function (ccda, data) {
     var allSections = ccda.elsByTag('section');
     allSections.each = each;
 
-    allSections.each(function(s) {
+    allSections.each(function (s) {
 
         var code = s.tag('code').attr('displayName');
-        var templateId =  s.tag('templateId').attr('root');
+        var templateId = s.tag('templateId').attr('root');
 
         var existingTemplateId = containsTemplateId(templateId, data);
 
@@ -270,12 +265,11 @@ module.exports = function (ccda, data) {
                 data[nodeName] = {};
             }
 
-            if(data[nodeName]) {
+            if (data[nodeName]) {
                 data[nodeName].displayName = code;
                 data[nodeName].templateId = templateId;
                 data[nodeName].text = s.tag('text').val(true);
             }
-
         }
     });
 };
@@ -284,69 +278,73 @@ module.exports = function (ccda, data) {
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 /*
  * Parser for the CCDA demographics section
  */
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.demographics = demographics;
 
   function demographics(ccda) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
-    var data = {}, el;
-    
+    var data = {},
+        el;
+
     var demographics = ccda.section('demographics');
-    
+
     var patient = demographics.tag('patientRole');
     el = patient.tag('patient').tag('name');
     var patient_name_dict = parseName(el);
-    
+
     el = patient.tag('patient');
     var dob = parseDate(el.tag('birthTime').attr('value')),
         gender = Core.Codes.gender(el.tag('administrativeGenderCode').attr('code')),
         marital_status = Core.Codes.maritalStatus(el.tag('maritalStatusCode').attr('code'));
-    
+
     el = patient.tag('addr');
     var patient_address_dict = parseAddress(el);
-    
+
     el = patient.tag('telecom');
     var home = el.attr('value'),
         work = null,
         mobile = null;
-    
+
     var email = null;
-    
+
     var language = patient.tag('languageCommunication').tag('languageCode').attr('code'),
         race = patient.tag('raceCode').attr('displayName'),
         ethnicity = patient.tag('ethnicGroupCode').attr('displayName'),
         religion = patient.tag('religiousAffiliationCode').attr('displayName');
-    
+
     el = patient.tag('birthplace');
     var birthplace_dict = parseAddress(el);
-    
+
     el = patient.tag('guardian');
     var guardian_relationship = el.tag('code').attr('displayName'),
         guardian_relationship_code = el.tag('code').attr('code'),
         guardian_home = el.tag('telecom').attr('value');
-    
+
     el = el.tag('guardianPerson').tag('name');
     var guardian_name_dict = parseName(el);
-    
+
     el = patient.tag('guardian').tag('addr');
     var guardian_address_dict = parseAddress(el);
-    
+
     el = patient.tag('providerOrganization');
     var provider_organization = el.tag('name').val(),
         provider_phone = el.tag('telecom').attr('value');
-    
+
     var provider_address_dict = parseAddress(el.tag('addr'));
-    
+
     data = {
       name: patient_name_dict,
       dob: dob,
@@ -386,34 +384,42 @@ module.exports = function(doc) {
         address: provider_address_dict
       }
     };
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 module.exports = {
-  stripWhitespace: stripWhitespace
-}
+    stripWhitespace: stripWhitespace
+};
 
-function stripWhitespace (str) {
-    if (!str) { return str; }
-    return str.replace(/^\s+|\s+$/g,'');
+function stripWhitespace(str) {
+    if (!str) {
+        return str;
+    }
+    return str.replace(/^\s+|\s+$/g, '');
 };
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDAR2 Health Concerns Section
  * 2.16.840.1.113883.10.20.22.2.58
  */
 
-module.exports = function(doc) {
+module.exports = function (doc) {
     var self = this;
     self.doc = doc;
 
@@ -421,24 +427,25 @@ module.exports = function(doc) {
         var parseDate = self.doc.parseDate;
         var parseName = self.doc.parseName;
         var parseAddress = self.doc.parseAddress;
-    
+
         // Helper to create each iterator for collection
-        var each = function (callback) {
+        var each = function each(callback) {
             for (var i = 0; i < this.length; i++) {
                 callback(this[i]);
             }
         };
-    
-        var model = {}, el;
+
+        var model = {},
+            el;
         model.entries = [];
-    
+
         model.text = ccda.tag('text').val(true);
-    
+
         var health_concerns = ccda.section('health_concerns_document');
         var title = health_concerns.tag('title').val();
-    
-        health_concerns.entries().each(function(entry) {
-    
+
+        health_concerns.entries().each(function (entry) {
+
             var entryModel = {};
             // Parse out the ACT Body
             //A record of something that is being done, has been done, can be done, or is intended or requested to be done.
@@ -450,51 +457,50 @@ module.exports = function(doc) {
             var code = act.tag('code');
             var name = code.attr('displayName');
             var effectiveTime = parseDate(entry.tag('effectiveTime'));
-    
+
             // The model we want to return in json
             var actModel = {
                 effective_time: effectiveTime,
                 name: name,
-                entry_relationship:[]
+                entry_relationship: []
             };
-    
+
             // Parse Entity Relationship child nodes
-    
+
             var ers = entry.elsByTag('entryRelationship');
             ers.each = each;
-    
-            ers.each(function(er){
-    
+
+            ers.each(function (er) {
+
                 var erModel = {
-                    type_code : er.attr('typeCode'),
-                    observations : []
+                    type_code: er.attr('typeCode'),
+                    observations: []
                 };
-    
+
                 var obs = er.elsByTag('observation');
                 obs.each = each;
-    
+
                 // Parse out Obsevations for Each ER
-                obs.each(function(ob) {
+                obs.each(function (ob) {
                     erModel.observations.push({
                         class_code: ob.attr('classCode'),
                         mood_code: ob.attr('moodCode'),
-                        display_name : ob.tag('value').attr('displayName'),
+                        display_name: ob.tag('value').attr('displayName'),
                         status: ob.tag('statusCode').attr('code')
                     });
                 });
-    
+
                 actModel.entry_relationship.push(erModel);
-    
             });
-    
+
             // Add ACT Model to our final return model
             entryModel['act'] = actModel;
             model.entries.push(entryModel);
         });
-    
+
         return model;
-    };    
-}
+    };
+};
 
 /***/ }),
 /* 5 */
@@ -514,23 +520,21 @@ var Generators = __webpack_require__(14);
 
 var Parsers = __webpack_require__(18);
 
-
 /* exported BlueButton */
 module.exports = function (source, opts) {
   var type, parsedData, parsedDocument;
-  
+
   // Look for options
   if (!opts) opts = {};
-  
+
   // Detect and parse the source data
   parsedData = Core.parseData(source);
-  
+
   // Detect and parse the document
   if (opts.parser) {
-    
+
     // TODO: parse the document with provided custom parser
     parsedDocument = opts.parser();
-    
   } else {
     var documents = new Documents();
     type = documents.detect(parsedData);
@@ -574,26 +578,25 @@ module.exports = function (source, opts) {
         }
     }
   }
-  
+
   return {
     type: type,
     data: parsedDocument,
     source: parsedData
   };
-
 };
-
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * ...
  */
 
-
-  
 /*
   * Administrative Gender (HL7 V3)
   * http://phinvads.cdc.gov/vads/ViewValueSet.action?id=8DE75E17-176B-DE11-9B52-0015173D1785
@@ -745,321 +748,321 @@ var RACE_ETHNICITY_MAP = {
   */
 var ROLE_MAP = {
   "ACC": "accident site",
-  "ACHFID":  "accreditation location identifier",
-  "ACTMIL":  "active duty military",
+  "ACHFID": "accreditation location identifier",
+  "ACTMIL": "active duty military",
   "ALL": "allergy clinic",
   "AMB": "ambulance",
-  "AMPUT":   "amputee clinic",
-  "ANTIBIOT":    "antibiotic",
-  "ASSIST":  "assistive non-person living subject",
-  "AUNT":    "aunt",
-  "B":   "blind",
-  "BF":  "beef",
-  "BILL":    "billing contact",
-  "BIOTH":   "biotherapeutic non-person living subject",
-  "BL":  "broiler",
-  "BMTC":    "bone marrow transplant clinic",
-  "BMTU":    "bone marrow transplant unit",
-  "BR":  "breeder",
-  "BREAST":  "breast clinic",
+  "AMPUT": "amputee clinic",
+  "ANTIBIOT": "antibiotic",
+  "ASSIST": "assistive non-person living subject",
+  "AUNT": "aunt",
+  "B": "blind",
+  "BF": "beef",
+  "BILL": "billing contact",
+  "BIOTH": "biotherapeutic non-person living subject",
+  "BL": "broiler",
+  "BMTC": "bone marrow transplant clinic",
+  "BMTU": "bone marrow transplant unit",
+  "BR": "breeder",
+  "BREAST": "breast clinic",
   "BRO": "brother",
-  "BROINLAW":    "brother-in-law",
-  "C":   "calibrator",
+  "BROINLAW": "brother-in-law",
+  "C": "calibrator",
   "CANC": "child and adolescent neurology clinic",
   "CAPC": "child and adolescent psychiatry clinic",
   "CARD": "ambulatory health care facilities; clinic/center; rehabilitation: cardiac facilities",
   "CAS": "asylum seeker",
-  "CASM":    "single minor asylum seeker",
-  "CATH":    "cardiac catheterization lab",
+  "CASM": "single minor asylum seeker",
+  "CATH": "cardiac catheterization lab",
   "CCO": "clinical companion",
   "CCU": "coronary care unit",
-  "CHEST":   "chest unit",
-  "CHILD":   "child",
-  "CHLDADOPT":   "adopted child",
-  "CHLDFOST":    "foster child",
-  "CHLDINLAW":   "child in-law",
+  "CHEST": "chest unit",
+  "CHILD": "child",
+  "CHLDADOPT": "adopted child",
+  "CHLDFOST": "foster child",
+  "CHLDINLAW": "child in-law",
   "CHR": "chronic care facility",
-  "CLAIM":   "claimant",
-  "CN":  "national",
-  "CNRP":    "non-country member without residence permit",
-  "CNRPM":   "non-country member minor without residence permit",
-  "CO":  "companion",
-  "COAG":    "coagulation clinic",
-  "COCBEN":  "continuity of coverage beneficiary",
-  "COMM":    "community location",
+  "CLAIM": "claimant",
+  "CN": "national",
+  "CNRP": "non-country member without residence permit",
+  "CNRPM": "non-country member minor without residence permit",
+  "CO": "companion",
+  "COAG": "coagulation clinic",
+  "COCBEN": "continuity of coverage beneficiary",
+  "COMM": "community location",
   "COMMUNITYLABORATORY": "community laboratory",
-  "COUSN":   "cousin",
-  "CPCA":    "permit card applicant",
-  "CRIMEVIC":    "crime victim",
+  "COUSN": "cousin",
+  "CPCA": "permit card applicant",
+  "CRIMEVIC": "crime victim",
   "CRP": "non-country member with residence permit",
-  "CRPM":    "non-country member minor with residence permit",
+  "CRPM": "non-country member minor with residence permit",
   "CRS": "colon and rectal surgery clinic",
   "CSC": "community service center",
-  "CVDX":    "cardiovascular diagnostics or therapeutics unit",
-  "DA":  "dairy",
-  "DADDR":   "delivery address",
+  "CVDX": "cardiovascular diagnostics or therapeutics unit",
+  "DA": "dairy",
+  "DADDR": "delivery address",
   "DAU": "natural daughter",
-  "DAUADOPT":    "adopted daughter",
-  "DAUC":    "daughter",
+  "DAUADOPT": "adopted daughter",
+  "DAUC": "daughter",
   "DAUFOST": "foster daughter",
-  "DAUINLAW":    "daughter in-law",
-  "DC":  "therapeutic class",
-  "DEBR":    "debridement",
-  "DERM":    "dermatology clinic",
+  "DAUINLAW": "daughter in-law",
+  "DC": "therapeutic class",
+  "DEBR": "debridement",
+  "DERM": "dermatology clinic",
   "DIFFABL": "differently abled",
   "DOMPART": "domestic partner",
   "DPOWATT": "durable power of attorney",
-  "DR":  "draft",
-  "DU":  "dual",
-  "DX":  "diagnostics or therapeutics unit",
-  "E":   "electronic qc",
-  "ECHO":    "echocardiography lab",
-  "ECON":    "emergency contact",
-  "ENDO":    "endocrinology clinic",
-  "ENDOS":   "endoscopy lab",
-  "ENROLBKR":    "enrollment broker",
+  "DR": "draft",
+  "DU": "dual",
+  "DX": "diagnostics or therapeutics unit",
+  "E": "electronic qc",
+  "ECHO": "echocardiography lab",
+  "ECON": "emergency contact",
+  "ENDO": "endocrinology clinic",
+  "ENDOS": "endoscopy lab",
+  "ENROLBKR": "enrollment broker",
   "ENT": "otorhinolaryngology clinic",
-  "EPIL":    "epilepsy unit",
-  "ER":  "emergency room",
+  "EPIL": "epilepsy unit",
+  "ER": "emergency room",
   "ERL": "enrollment",
   "ETU": "emergency trauma unit",
-  "EXCEST":  "executor of estate",
+  "EXCEST": "executor of estate",
   "EXT": "extended family member",
-  "F":   "filler proficiency",
-  "FAMDEP":  "family dependent",
+  "F": "filler proficiency",
+  "FAMDEP": "family dependent",
   "FAMMEMB": "family member",
-  "FI":  "fiber",
+  "FI": "fiber",
   "FMC": "family medicine clinic",
-  "FRND":    "unrelated friend",
-  "FSTUD":   "full-time student",
+  "FRND": "unrelated friend",
+  "FSTUD": "full-time student",
   "FTH": "father",
-  "FTHINLAW":    "father-in-law",
+  "FTHINLAW": "father-in-law",
   "FULLINS": "fully insured coverage sponsor",
-  "G":   "group",
-  "GACH":    "hospitals; general acute care hospital",
-  "GD":  "generic drug",
+  "G": "group",
+  "GACH": "hospitals; general acute care hospital",
+  "GD": "generic drug",
   "GDF": "generic drug form",
   "GDS": "generic drug strength",
-  "GDSF":    "generic drug strength form",
-  "GGRFTH":  "great grandfather",
-  "GGRMTH":  "great grandmother",
-  "GGRPRN":  "great grandparent",
-  "GI":  "gastroenterology clinic",
-  "GIDX":    "gastroenterology diagnostics or therapeutics lab",
+  "GDSF": "generic drug strength form",
+  "GGRFTH": "great grandfather",
+  "GGRMTH": "great grandmother",
+  "GGRPRN": "great grandparent",
+  "GI": "gastroenterology clinic",
+  "GIDX": "gastroenterology diagnostics or therapeutics lab",
   "GIM": "general internal medicine clinic",
-  "GRFTH":   "grandfather",
-  "GRMTH":   "grandmother",
-  "GRNDCHILD":   "grandchild",
+  "GRFTH": "grandfather",
+  "GRMTH": "grandmother",
+  "GRNDCHILD": "grandchild",
   "GRNDDAU": "granddaughter",
   "GRNDSON": "grandson",
-  "GRPRN":   "grandparent",
-  "GT":  "guarantor",
+  "GRPRN": "grandparent",
+  "GT": "guarantor",
   "GUADLTM": "guardian ad lidem",
-  "GUARD":   "guardian",
+  "GUARD": "guardian",
   "GYN": "gynecology clinic",
-  "HAND":    "hand clinic",
-  "HANDIC":  "handicapped dependent",
-  "HBRO":    "half-brother",
-  "HD":  "hemodialysis unit",
+  "HAND": "hand clinic",
+  "HANDIC": "handicapped dependent",
+  "HBRO": "half-brother",
+  "HD": "hemodialysis unit",
   "HEM": "hematology clinic",
-  "HLAB":    "hospital laboratory",
-  "HOMEHEALTH":  "home health",
-  "HOSP":    "hospital",
+  "HLAB": "hospital laboratory",
+  "HOMEHEALTH": "home health",
+  "HOSP": "hospital",
   "HPOWATT": "healthcare power of attorney",
-  "HRAD":    "radiology unit",
-  "HSIB":    "half-sibling",
-  "HSIS":    "half-sister",
+  "HRAD": "radiology unit",
+  "HSIB": "half-sibling",
+  "HSIS": "half-sister",
   "HTN": "hypertension clinic",
-  "HU":  "hospital unit",
-  "HUSB":    "husband",
-  "HUSCS":   "specimen collection site",
+  "HU": "hospital unit",
+  "HUSB": "husband",
+  "HUSCS": "specimen collection site",
   "ICU": "intensive care unit",
   "IEC": "impairment evaluation center",
-  "INDIG":   "member of an indigenous people",
-  "INFD":    "infectious disease clinic",
+  "INDIG": "member of an indigenous people",
+  "INFD": "infectious disease clinic",
   "INJ": "injured plaintiff",
-  "INJWKR":  "injured worker",
-  "INLAB":   "inpatient laboratory",
+  "INJWKR": "injured worker",
+  "INLAB": "inpatient laboratory",
   "INPHARM": "inpatient pharmacy",
   "INV": "infertility clinic",
-  "JURID":   "jurisdiction location identifier",
-  "L":   "pool",
-  "LABORATORY":  "laboratory",
+  "JURID": "jurisdiction location identifier",
+  "L": "pool",
+  "LABORATORY": "laboratory",
   "LOCHFID": "local location identifier",
-  "LY":  "layer",
-  "LYMPH":   "lympedema clinic",
-  "MAUNT":   "maternalaunt",
+  "LY": "layer",
+  "LYMPH": "lympedema clinic",
+  "MAUNT": "maternalaunt",
   "MBL": "medical laboratory",
-  "MCOUSN":  "maternalcousin",
-  "MGDSF":   "manufactured drug strength form",
-  "MGEN":    "medical genetics clinic",
+  "MCOUSN": "maternalcousin",
+  "MGDSF": "manufactured drug strength form",
+  "MGEN": "medical genetics clinic",
   "MGGRFTH": "maternalgreatgrandfather",
   "MGGRMTH": "maternalgreatgrandmother",
   "MGGRPRN": "maternalgreatgrandparent",
-  "MGRFTH":  "maternalgrandfather",
-  "MGRMTH":  "maternalgrandmother",
-  "MGRPRN":  "maternalgrandparent",
-  "MHSP":    "military hospital",
+  "MGRFTH": "maternalgrandfather",
+  "MGRMTH": "maternalgrandmother",
+  "MGRPRN": "maternalgrandparent",
+  "MHSP": "military hospital",
   "MIL": "military",
-  "MOBL":    "mobile unit",
-  "MT":  "meat",
+  "MOBL": "mobile unit",
+  "MT": "meat",
   "MTH": "mother",
-  "MTHINLAW":    "mother-in-law",
-  "MU":  "multiplier",
-  "MUNCLE":  "maternaluncle",
-  "NBOR":    "neighbor",
-  "NBRO":    "natural brother",
-  "NCCF":    "nursing or custodial care facility",
-  "NCCS":    "neurology critical care and stroke unit",
-  "NCHILD":  "natural child",
-  "NEPH":    "nephrology clinic",
-  "NEPHEW":  "nephew",
-  "NEUR":    "neurology clinic",
-  "NFTH":    "natural father",
-  "NFTHF":   "natural father of fetus",
-  "NIECE":   "niece",
+  "MTHINLAW": "mother-in-law",
+  "MU": "multiplier",
+  "MUNCLE": "maternaluncle",
+  "NBOR": "neighbor",
+  "NBRO": "natural brother",
+  "NCCF": "nursing or custodial care facility",
+  "NCCS": "neurology critical care and stroke unit",
+  "NCHILD": "natural child",
+  "NEPH": "nephrology clinic",
+  "NEPHEW": "nephew",
+  "NEUR": "neurology clinic",
+  "NFTH": "natural father",
+  "NFTHF": "natural father of fetus",
+  "NIECE": "niece",
   "NIENEPH": "niece/nephew",
-  "NMTH":    "natural mother",
+  "NMTH": "natural mother",
   "NOK": "next of kin",
-  "NPRN":    "natural parent",
-  "NS":  "neurosurgery unit",
-  "NSIB":    "natural sibling",
-  "NSIS":    "natural sister",
-  "O":   "operator proficiency",
-  "OB":  "obstetrics clinic",
-  "OF":  "outpatient facility",
+  "NPRN": "natural parent",
+  "NS": "neurosurgery unit",
+  "NSIB": "natural sibling",
+  "NSIS": "natural sister",
+  "O": "operator proficiency",
+  "OB": "obstetrics clinic",
+  "OF": "outpatient facility",
   "OMS": "oral and maxillofacial surgery clinic",
-  "ONCL":    "medical oncology clinic",
+  "ONCL": "medical oncology clinic",
   "OPH": "opthalmology clinic",
-  "OPTC":    "optometry clinic",
+  "OPTC": "optometry clinic",
   "ORG": "organizational contact",
-  "ORTHO":   "orthopedics clinic",
-  "OUTLAB":  "outpatient laboratory",
-  "OUTPHARM":    "outpatient pharmacy",
-  "P":   "patient",
-  "PAINCL":  "pain clinic",
+  "ORTHO": "orthopedics clinic",
+  "OUTLAB": "outpatient laboratory",
+  "OUTPHARM": "outpatient pharmacy",
+  "P": "patient",
+  "PAINCL": "pain clinic",
   "PATHOLOGIST": "pathologist",
-  "PAUNT":   "paternalaunt",
-  "PAYOR":   "payor contact",
-  "PC":  "primary care clinic",
-  "PCOUSN":  "paternalcousin",
-  "PEDC":    "pediatrics clinic",
+  "PAUNT": "paternalaunt",
+  "PAYOR": "payor contact",
+  "PC": "primary care clinic",
+  "PCOUSN": "paternalcousin",
+  "PEDC": "pediatrics clinic",
   "PEDCARD": "pediatric cardiology clinic",
-  "PEDE":    "pediatric endocrinology clinic",
-  "PEDGI":   "pediatric gastroenterology clinic",
-  "PEDHEM":  "pediatric hematology clinic",
-  "PEDHO":   "pediatric oncology clinic",
-  "PEDICU":  "pediatric intensive care unit",
-  "PEDID":   "pediatric infectious disease clinic",
+  "PEDE": "pediatric endocrinology clinic",
+  "PEDGI": "pediatric gastroenterology clinic",
+  "PEDHEM": "pediatric hematology clinic",
+  "PEDHO": "pediatric oncology clinic",
+  "PEDICU": "pediatric intensive care unit",
+  "PEDID": "pediatric infectious disease clinic",
   "PEDNEPH": "pediatric nephrology clinic",
   "PEDNICU": "pediatric neonatal intensive care unit",
-  "PEDRHEUM":    "pediatric rheumatology clinic",
-  "PEDU":    "pediatric unit",
+  "PEDRHEUM": "pediatric rheumatology clinic",
+  "PEDU": "pediatric unit",
   "PGGRFTH": "paternalgreatgrandfather",
   "PGGRMTH": "paternalgreatgrandmother",
   "PGGRPRN": "paternalgreatgrandparent",
-  "PGRFTH":  "paternalgrandfather",
-  "PGRMTH":  "paternalgrandmother",
-  "PGRPRN":  "paternalgrandparent",
-  "PH":  "policy holder",
-  "PHARM":   "pharmacy",
-  "PHLEBOTOMIST":    "phlebotomist",
+  "PGRFTH": "paternalgrandfather",
+  "PGRMTH": "paternalgrandmother",
+  "PGRPRN": "paternalgrandparent",
+  "PH": "policy holder",
+  "PHARM": "pharmacy",
+  "PHLEBOTOMIST": "phlebotomist",
   "PHU": "psychiatric hospital unit",
-  "PL":  "pleasure",
+  "PL": "pleasure",
   "PLS": "plastic surgery clinic",
   "POD": "podiatry clinic",
-  "POWATT":  "power of attorney",
+  "POWATT": "power of attorney",
   "PRC": "pain rehabilitation center",
-  "PREV":    "preventive medicine clinic",
+  "PREV": "preventive medicine clinic",
   "PRN": "parent",
-  "PRNINLAW":    "parent in-law",
-  "PROCTO":  "proctology clinic",
-  "PROFF":   "provider's office",
-  "PROG":    "program eligible",
-  "PROS":    "prosthodontics clinic",
+  "PRNINLAW": "parent in-law",
+  "PROCTO": "proctology clinic",
+  "PROFF": "provider's office",
+  "PROG": "program eligible",
+  "PROS": "prosthodontics clinic",
   "PSI": "psychology clinic",
-  "PSTUD":   "part-time student",
+  "PSTUD": "part-time student",
   "PSY": "psychiatry clinic",
-  "PSYCHF":  "psychiatric care facility",
-  "PT":  "patient",
-  "PTRES":   "patient's residence",
-  "PUNCLE":  "paternaluncle",
-  "Q":   "quality control",
-  "R":   "replicate",
-  "RADDX":   "radiology diagnostics or therapeutics unit",
-  "RADO":    "radiation oncology unit",
-  "RC":  "racing",
+  "PSYCHF": "psychiatric care facility",
+  "PT": "patient",
+  "PTRES": "patient's residence",
+  "PUNCLE": "paternaluncle",
+  "Q": "quality control",
+  "R": "replicate",
+  "RADDX": "radiology diagnostics or therapeutics unit",
+  "RADO": "radiation oncology unit",
+  "RC": "racing",
   "RESPRSN": "responsible party",
   "RETIREE": "retiree",
-  "RETMIL":  "retired military",
-  "RH":  "rehabilitation hospital",
-  "RHAT":    "addiction treatment center",
-  "RHEUM":   "rheumatology clinic",
-  "RHII":    "intellectual impairment center",
-  "RHMAD":   "parents with adjustment difficulties center",
-  "RHPI":    "physical impairment center",
-  "RHPIH":   "physical impairment - hearing center",
-  "RHPIMS":  "physical impairment - motor skills center",
-  "RHPIVS":  "physical impairment - visual skills center",
+  "RETMIL": "retired military",
+  "RH": "rehabilitation hospital",
+  "RHAT": "addiction treatment center",
+  "RHEUM": "rheumatology clinic",
+  "RHII": "intellectual impairment center",
+  "RHMAD": "parents with adjustment difficulties center",
+  "RHPI": "physical impairment center",
+  "RHPIH": "physical impairment - hearing center",
+  "RHPIMS": "physical impairment - motor skills center",
+  "RHPIVS": "physical impairment - visual skills center",
   "RHU": "rehabilitation hospital unit",
-  "RHYAD":   "youths with adjustment difficulties center",
-  "RNEU":    "neuroradiology unit",
-  "ROOM":    "roommate",
+  "RHYAD": "youths with adjustment difficulties center",
+  "RNEU": "neuroradiology unit",
+  "ROOM": "roommate",
   "RTF": "residential treatment facility",
-  "SCHOOL":  "school",
+  "SCHOOL": "school",
   "SCN": "screening",
   "SEE": "seeing",
-  "SELF":    "self",
+  "SELF": "self",
   "SELFINS": "self insured coverage sponsor",
-  "SH":  "show",
+  "SH": "show",
   "SIB": "sibling",
-  "SIBINLAW":    "sibling in-law",
+  "SIBINLAW": "sibling in-law",
   "SIGOTHR": "significant other",
   "SIS": "sister",
-  "SISINLAW":    "sister-in-law",
-  "SLEEP":   "sleep disorders unit",
+  "SISINLAW": "sister-in-law",
+  "SLEEP": "sleep disorders unit",
   "SNF": "skilled nursing facility",
-  "SNIFF":   "sniffing",
+  "SNIFF": "sniffing",
   "SON": "natural son",
-  "SONADOPT":    "adopted son",
-  "SONC":    "son",
+  "SONADOPT": "adopted son",
+  "SONC": "son",
   "SONFOST": "foster son",
-  "SONINLAW":    "son in-law",
-  "SPMED":   "sports medicine clinic",
-  "SPON":    "sponsored dependent",
+  "SONINLAW": "son in-law",
+  "SPMED": "sports medicine clinic",
+  "SPON": "sponsored dependent",
   "SPOWATT": "special power of attorney",
   "SPS": "spouse",
-  "STPBRO":  "stepbrother",
+  "STPBRO": "stepbrother",
   "STPCHLD": "step child",
-  "STPDAU":  "stepdaughter",
-  "STPFTH":  "stepfather",
-  "STPMTH":  "stepmother",
-  "STPPRN":  "step parent",
-  "STPSIB":  "step sibling",
-  "STPSIS":  "stepsister",
-  "STPSON":  "stepson",
-  "STUD":    "student",
-  "SU":  "surgery clinic",
+  "STPDAU": "stepdaughter",
+  "STPFTH": "stepfather",
+  "STPMTH": "stepmother",
+  "STPPRN": "step parent",
+  "STPSIB": "step sibling",
+  "STPSIS": "stepsister",
+  "STPSON": "stepson",
+  "STUD": "student",
+  "SU": "surgery clinic",
   "SUBJECT": "self",
-  "SURF":    "substance use rehabilitation facility",
-  "THIRDPARTY":  "third party",
+  "SURF": "substance use rehabilitation facility",
+  "THIRDPARTY": "third party",
   "TPA": "third party administrator",
-  "TR":  "transplant clinic",
-  "TRAVEL":  "travel and geographic medicine clinic",
+  "TR": "transplant clinic",
+  "TRAVEL": "travel and geographic medicine clinic",
   "TRB": "tribal member",
   "UMO": "utilization management organization",
-  "UNCLE":   "uncle",
+  "UNCLE": "uncle",
   "UPC": "underage protection center",
   "URO": "urology clinic",
-  "V":   "verifying",
+  "V": "verifying",
   "VET": "veteran",
-  "VL":  "veal",
-  "WARD":    "ward",
-  "WIFE":    "wife",
-  "WL":  "wool",
+  "VL": "veal",
+  "WARD": "ward",
+  "WIFE": "wife",
+  "WL": "wool",
   "WND": "wound clinic",
-  "WO":  "working",
-  "WORK":    "work site",
+  "WO": "working",
+  "WORK": "work site"
 };
 
 var PROBLEM_STATUS_MAP = {
@@ -1068,9 +1071,8 @@ var PROBLEM_STATUS_MAP = {
   "413322009": "resolved"
 };
 
-
 // copied from _.invert to avoid making browser users include all of underscore
-var invertKeys = function(obj) {
+var invertKeys = function invertKeys(obj) {
   var result = {};
   var keys = Object.keys(obj);
   for (var i = 0, length = keys.length; i < length; i++) {
@@ -1079,22 +1081,23 @@ var invertKeys = function(obj) {
   return result;
 };
 
-var lookupFnGenerator = function(map) {
-  return function(key) {
+var lookupFnGenerator = function lookupFnGenerator(map) {
+  return function (key) {
     return map[key] || null;
   };
 };
-var reverseLookupFnGenerator = function(map) {
-  return function(key) {
-    if (!key) { return null; }
+var reverseLookupFnGenerator = function reverseLookupFnGenerator(map) {
+  return function (key) {
+    if (!key) {
+      return null;
+    }
     var invertedMap = invertKeys(map);
     key = key.toLowerCase();
     return invertedMap[key] || null;
   };
 };
 
-
-module.exports =  {
+module.exports = {
   gender: lookupFnGenerator(GENDER_MAP),
   reverseGender: reverseLookupFnGenerator(GENDER_MAP),
   maritalStatus: lookupFnGenerator(MARITAL_STATUS_MAP),
@@ -1109,21 +1112,26 @@ module.exports =  {
   reverseProblemStatus: reverseLookupFnGenerator(PROBLEM_STATUS_MAP)
 };
 
-
 /***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 /*
  * ...
  */
-var { stripWhitespace } = __webpack_require__(3);
+var _require = __webpack_require__(3),
+    stripWhitespace = _require.stripWhitespace;
 /*
   * A function used to wrap DOM elements in an object so methods can be added
   * to the element object. IE8 does not allow methods to be added directly to
   * DOM objects.
   */
-var wrapElement = function (el) {
+
+
+var wrapElement = function wrapElement(el) {
   function wrapElementHelper(currentEl) {
     return {
       el: currentEl,
@@ -1138,7 +1146,7 @@ var wrapElement = function (el) {
       isEmpty: isEmpty
     };
   }
-  
+
   // el is an array of elements
   if (el.length) {
     var els = [];
@@ -1146,18 +1154,17 @@ var wrapElement = function (el) {
       els.push(wrapElementHelper(el[i]));
     }
     return els;
-  
-  // el is a single element
+
+    // el is a single element
   } else {
     return wrapElementHelper(el);
   }
 };
 
-
 /*
   * Find element by tag name, then attribute value.
   */
-var tagAttrVal = function (el, tag, attr, value) {
+var tagAttrVal = function tagAttrVal(el, tag, attr, value) {
   el = el.getElementsByTagName(tag);
   for (var i = 0; i < el.length; i++) {
     if (el[i].getAttribute(attr) === value) {
@@ -1166,7 +1173,6 @@ var tagAttrVal = function (el, tag, attr, value) {
   }
 };
 
-
 /*
   * Search for a template ID, and return its parent element.
   * Example:
@@ -1174,7 +1180,7 @@ var tagAttrVal = function (el, tag, attr, value) {
   * Can be found using:
   *   el = dom.template('2.16.840.1.113883.10.20.22.2.17');
   */
-var template = function (templateId) {
+var template = function template(templateId) {
   var el = tagAttrVal(this.el, 'templateId', 'root', templateId);
   if (!el) {
     return emptyEl();
@@ -1195,35 +1201,31 @@ var template = function (templateId) {
   * We can't use `getElementById` because `ID` (the standard attribute name
   * in this context) is not the same attribute as `id` in XML, so there are no matches
   */
-var content = function (contentId) {
-    var el = tagAttrVal(this.el, 'content', 'ID', contentId);
-    if (!el) {
-      // check the <td> tag too, which isn't really correct but
-      // will inevitably be used sometimes because it looks like very
-      // normal HTML to put the data directly in a <td>
-      el = tagAttrVal(this.el, 'td', 'ID', contentId);
-    }
-    if (!el) {
-      // Ugh, Epic uses really non-standard locations.
-      el = tagAttrVal(this.el, 'caption', 'ID', contentId) ||
-            tagAttrVal(this.el, 'paragraph', 'ID', contentId) ||
-            tagAttrVal(this.el, 'tr', 'ID', contentId) ||
-            tagAttrVal(this.el, 'item', 'ID', contentId);
-    }
+var content = function content(contentId) {
+  var el = tagAttrVal(this.el, 'content', 'ID', contentId);
+  if (!el) {
+    // check the <td> tag too, which isn't really correct but
+    // will inevitably be used sometimes because it looks like very
+    // normal HTML to put the data directly in a <td>
+    el = tagAttrVal(this.el, 'td', 'ID', contentId);
+  }
+  if (!el) {
+    // Ugh, Epic uses really non-standard locations.
+    el = tagAttrVal(this.el, 'caption', 'ID', contentId) || tagAttrVal(this.el, 'paragraph', 'ID', contentId) || tagAttrVal(this.el, 'tr', 'ID', contentId) || tagAttrVal(this.el, 'item', 'ID', contentId);
+  }
 
-    if (!el) {
-      return emptyEl();
-    } else {
-      return wrapElement(el);
-    }
-  };
-
+  if (!el) {
+    return emptyEl();
+  } else {
+    return wrapElement(el);
+  }
+};
 
 /*
   * Search for the first occurrence of an element by tag name.
   */
-var tag = function (tag) {
-  var el = this.el.getElementsByTagName(tag)[0];
+var tag = function tag(_tag) {
+  var el = this.el.getElementsByTagName(_tag)[0];
   if (!el) {
     return emptyEl();
   } else {
@@ -1247,9 +1249,11 @@ var tag = function (tag) {
   *   </parent>
   * parent.immediateChildTag('target') will have a result in the first case but not in the second.
   */
-var immediateChildTag = function (tag) {
+var immediateChildTag = function immediateChildTag(tag) {
   var els = this.el.getElementsByTagName(tag);
-  if (!els) { return null; }
+  if (!els) {
+    return null;
+  }
   for (var i = 0; i < els.length; i++) {
     if (els[i].parentNode === this.el) {
       return wrapElement(els[i]);
@@ -1258,24 +1262,19 @@ var immediateChildTag = function (tag) {
   return emptyEl();
 };
 
-
 /*
   * Search for all elements by tag name.
   */
-var elsByTag = function (tag) {
+var elsByTag = function elsByTag(tag) {
   return wrapElement(this.el.getElementsByTagName(tag));
 };
 
-
-var unescapeSpecialChars = function(s) {
-  if (!s) { return s; }
-  return s.replace(/&lt;/g, '<')
-          .replace(/&gt;/g, '>')
-          .replace(/&amp;/g, '&')
-          .replace(/&quot;/g, '"')
-          .replace(/&apos;/g, "'");
+var unescapeSpecialChars = function unescapeSpecialChars(s) {
+  if (!s) {
+    return s;
+  }
+  return s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&apos;/g, "'");
 };
-
 
 /*
   * Retrieve the element's attribute value. Example:
@@ -1286,8 +1285,10 @@ var unescapeSpecialChars = function(s) {
   * told to parse malformed XML as XML anyways), return the empty
   * string instead, so we fix that here.
   */
-var attr = function (attrName) {
-  if (!this.el) { return null; }
+var attr = function attr(attrName) {
+  if (!this.el) {
+    return null;
+  }
   var attrVal = this.el.getAttribute(attrName);
   if (attrVal) {
     return unescapeSpecialChars(attrVal);
@@ -1300,7 +1301,7 @@ var attr = function (attrName) {
   * a raw call attr() will return Strings, which can be unexpected,
   * since the string 'false' will by truthy
   */
-var boolAttr = function (attrName) {
+var boolAttr = function boolAttr(attrName) {
   var rawAttr = this.attr(attrName);
   if (rawAttr === 'true' || rawAttr === '1') {
     return true;
@@ -1318,9 +1319,13 @@ var boolAttr = function (attrName) {
   * which can store their content in a <content> tag in a totally different
   * part of the document.
   */
-var val = function (html) {
-  if (!this.el) { return null; }
-  if (!this.el.childNodes || !this.el.childNodes.length) { return null; }
+var val = function val(html) {
+  if (!this.el) {
+    return null;
+  }
+  if (!this.el.childNodes || !this.el.childNodes.length) {
+    return null;
+  }
   var textContent = html ? this.el.innerHTML : this.el.textContent;
 
   // if there's no text value here and the only thing inside is a
@@ -1330,15 +1335,12 @@ var val = function (html) {
 
     var contentId;
     // "no text value" might mean there's just a reference tag
-    if (this.el.childNodes.length === 1 &&
-        this.el.childNodes[0].tagName === 'reference') {
+    if (this.el.childNodes.length === 1 && this.el.childNodes[0].tagName === 'reference') {
       contentId = this.el.childNodes[0].getAttribute('value');
 
-    // or maybe a newlines on top/above the reference tag
-    } else if (this.el.childNodes.length === 3 &&
-        this.el.childNodes[1].tagName === 'reference') {
+      // or maybe a newlines on top/above the reference tag
+    } else if (this.el.childNodes.length === 3 && this.el.childNodes[1].tagName === 'reference') {
       contentId = this.el.childNodes[1].getAttribute('value');
-
     } else {
       return unescapeSpecialChars(textContent);
     }
@@ -1354,30 +1356,27 @@ var val = function (html) {
   return unescapeSpecialChars(textContent);
 };
 
-
 /*
   * Creates and returns an empty DOM element with tag name "empty":
   *   <empty></empty>
   */
-var emptyEl = function () {
+var emptyEl = function emptyEl() {
   var el = doc.createElement('empty');
   return wrapElement(el);
 };
-
 
 /*
   * Determines if the element is empty, i.e.:
   *   <empty></empty>
   * This element is created by function `emptyEL`.
   */
-var isEmpty = function () {
+var isEmpty = function isEmpty() {
   if (this.el.tagName.toLowerCase() === 'empty') {
     return true;
   } else {
     return false;
   }
 };
-
 
 /*
   * Cross-browser XML parsing supporting IE8+ and Node.js.
@@ -1388,23 +1387,23 @@ function parse(data) {
     console.log("BB Error: XML data is not a string");
     return null;
   }
-  
+
   var xml, parser;
-  
+
   // Node
   if (isNode) {
-    parser = new (xmldom.DOMParser)();
+    parser = new xmldom.DOMParser();
     xml = parser.parseFromString(data, "text/xml");
-    
-  // Browser
+
+    // Browser
   } else {
-    
+
     // Standard parser
     if (window.DOMParser) {
       parser = new DOMParser();
       xml = parser.parseFromString(data, "text/xml");
-      
-    // IE
+
+      // IE
     } else {
       try {
         xml = new ActiveXObject("Microsoft.XMLDOM");
@@ -1415,18 +1414,17 @@ function parse(data) {
       }
     }
   }
-  
+
   if (!xml || !xml.documentElement || xml.getElementsByTagName("parsererror").length) {
     console.log("BB Error: Could not parse XML");
     return null;
   }
-  
+
   return wrapElement(xml);
 };
 
-
 // Establish the root object, `window` in the browser, or `global` in Node.
-var root = this,
+var root = undefined,
     xmldom,
     isNode = false,
     doc = root.document; // Will be `undefined` if we're in Node
@@ -1454,6 +1452,9 @@ module.exports = require("xmldom");
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 /*
   * ...
   */
@@ -1462,7 +1463,7 @@ var CCD = __webpack_require__(11);
 var CCDA = __webpack_require__(12);
 var CCDAR2 = __webpack_require__(13);
 
-module.exports = function() {
+module.exports = function () {
   var self = this;
 
   self.detect = detect;
@@ -1484,34 +1485,32 @@ function detect(data) {
   if (!data.template) {
     return 'json';
   }
-  
+
   if (!data.template('2.16.840.1.113883.3.88.11.32.1').isEmpty()) {
     return 'c32';
-  } else if(!data.template('2.16.840.1.113883.10.20.22.1.1').isEmpty()) {
+  } else if (!data.template('2.16.840.1.113883.10.20.22.1.1').isEmpty()) {
     return 'ccda';
-  } else if(!data.template('2.16.840.1.113883.10.20.22.1.15').isEmpty()) {
+  } else if (!data.template('2.16.840.1.113883.10.20.22.1.15').isEmpty()) {
     return 'ccdar2';
-  }else if(!data.template('2.16.840.1.113883.10.20.22.1.2').isEmpty()) {
+  } else if (!data.template('2.16.840.1.113883.10.20.22.1.2').isEmpty()) {
     return 'ccd';
   }
 };
-
 
 /*
   * Get entries within an element (with tag name 'entry'), adds an `each` function
   */
 function entries() {
-  var each = function (callback) {
+  var each = function each(callback) {
     for (var i = 0; i < this.length; i++) {
       callback(this[i]);
     }
   };
-  
+
   var els = this.elsByTag('entry');
   els.each = each;
   return els;
 };
-
 
 /*
   * Parses an HL7 date in String form and creates a new Date object.
@@ -1577,45 +1576,46 @@ function parseDate(str) {
 var parseTimezoneChunker = /([\+\-]|\d\d)/gi;
 var parseTokenTimezone = /Z|[\+\-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
 function _utcOffsetFromString(string) {
-    string = string || '';
-    var possibleTzMatches = (string.match(parseTokenTimezone) || []),
-        tzChunk = possibleTzMatches[possibleTzMatches.length - 1] || [],
-        parts = (tzChunk + '').match(parseTimezoneChunker) || ['-', 0, 0],
-        minutes = +(parts[1] * 60) + _toInt(parts[2]);
+  string = string || '';
+  var possibleTzMatches = string.match(parseTokenTimezone) || [],
+      tzChunk = possibleTzMatches[possibleTzMatches.length - 1] || [],
+      parts = (tzChunk + '').match(parseTimezoneChunker) || ['-', 0, 0],
+      minutes = +(parts[1] * 60) + _toInt(parts[2]);
 
-    return parts[0] === '+' ? minutes : -minutes;
+  return parts[0] === '+' ? minutes : -minutes;
 }
 function _toInt(argumentForCoercion) {
-    var coercedNumber = +argumentForCoercion,
-        value = 0;
+  var coercedNumber = +argumentForCoercion,
+      value = 0;
 
-    if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-        if (coercedNumber >= 0) {
-            value = Math.floor(coercedNumber);
-        } else {
-            value = Math.ceil(coercedNumber);
-        }
+  if (coercedNumber !== 0 && isFinite(coercedNumber)) {
+    if (coercedNumber >= 0) {
+      value = Math.floor(coercedNumber);
+    } else {
+      value = Math.ceil(coercedNumber);
     }
+  }
 
-    return value;
+  return value;
 }
-
 
 /*
   * Parses an HL7 name (prefix / given [] / family)
   */
 function parseName(nameEl) {
   var prefix = nameEl.tag('prefix').val();
-  
+
   var els = nameEl.elsByTag('given');
   var given = [];
   for (var i = 0; i < els.length; i++) {
     var val = els[i].val();
-    if (val) { given.push(val); }
+    if (val) {
+      given.push(val);
+    }
   }
-  
+
   var family = nameEl.tag('family').val();
-  
+
   return {
     prefix: prefix,
     given: given,
@@ -1623,24 +1623,25 @@ function parseName(nameEl) {
   };
 };
 
-
 /*
   * Parses an HL7 address (streetAddressLine [], city, state, postalCode, country)
   */
 function parseAddress(addrEl) {
   var els = addrEl.elsByTag('streetAddressLine');
   var street = [];
-  
+
   for (var i = 0; i < els.length; i++) {
     var val = els[i].val();
-    if (val) { street.push(val); }
+    if (val) {
+      street.push(val);
+    }
   }
-  
+
   var city = addrEl.tag('city').val(),
       state = addrEl.tag('state').val(),
       zip = addrEl.tag('postalCode').val(),
       country = addrEl.tag('country').val();
-  
+
   return {
     street: street,
     city: city,
@@ -1650,16 +1651,18 @@ function parseAddress(addrEl) {
   };
 };
 
-
 /***/ }),
 /* 10 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * ...
  */
- 
-module.exports = function(getEntries) {
+
+module.exports = function (getEntries) {
   var self = this;
 
   self.getEntries = getEntries;
@@ -1680,8 +1683,9 @@ module.exports = function(getEntries) {
     * Usually we check first for the HITSP section ID and then for the HL7-CCD ID.
     */
   function section(name) {
-    var el, entries = self.getEntries();
-    
+    var el,
+        entries = self.getEntries();
+
     switch (name) {
       case 'document':
         return this.template('2.16.840.1.113883.3.88.11.32.1');
@@ -1744,15 +1748,17 @@ module.exports = function(getEntries) {
         el.entries = entries;
         return el;
     }
-    
+
     return null;
   };
 };
 
-
 /***/ }),
 /* 11 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * ...
@@ -1777,7 +1783,8 @@ module.exports = function (getEntries) {
      * Finds the section of a CCDA document
      */
     function section(name) {
-        var el, entries = self.getEntries();
+        var el,
+            entries = self.getEntries();
 
         switch (name) {
             case 'document':
@@ -1804,12 +1811,14 @@ module.exports = function (getEntries) {
 
         return null;
     };
-}
-
+};
 
 /***/ }),
 /* 12 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * ...
@@ -1821,21 +1830,22 @@ module.exports = function (getEntries) {
   self.getEntries = getEntries;
   self.process = process;
   self.section = section;
-  
+
   /*
    * Preprocesses the CCDA document
    */
   function process(ccda) {
     ccda.section = section;
     return ccda;
-  };  
-  
+  };
+
   /*
    * Finds the section of a CCDA document
    */
   function section(name) {
-    var el, entries = self.getEntries();
-    
+    var el,
+        entries = self.getEntries();
+
     switch (name) {
       case 'document':
         return this.template('2.16.840.1.113883.10.20.22.1.1');
@@ -1918,15 +1928,17 @@ module.exports = function (getEntries) {
         el.entries = entries;
         return el;
     }
-    
-    return null;
-  };  
-};
 
+    return null;
+  };
+};
 
 /***/ }),
 /* 13 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * ...
@@ -1935,9 +1947,9 @@ module.exports = function (getEntries) {
 module.exports = function (getEntries) {
     var self = this;
     self.getEntries = getEntries;
-    
+
     self.process = process;
-    self.section = section;   
+    self.section = section;
 
     /*
      * Preprocesses the CCDAR2 document
@@ -1951,7 +1963,8 @@ module.exports = function (getEntries) {
      * Finds the section of a CCDA document
      */
     function section(name) {
-        var el, entries = self.getEntries();
+        var el,
+            entries = self.getEntries();
 
         switch (name) {
             case 'document':
@@ -1978,12 +1991,14 @@ module.exports = function (getEntries) {
 
         return null;
     };
-}
-
+};
 
 /***/ }),
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * ...
@@ -1992,7 +2007,7 @@ module.exports = function (getEntries) {
 var C32 = __webpack_require__(15);
 var CCDA = __webpack_require__(16);
 
-var method = function () {};
+var method = function method() {};
 
 /* exported Generators */
 module.exports = {
@@ -2000,159 +2015,142 @@ module.exports = {
   C32: C32,
   CCDA: CCDA
 };
-  
 
-
-  /* Import ejs if we're in Node. Then setup custom formatting filters
-   */
-  /*if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-      ejs = require("ejs");
-    }
+/* Import ejs if we're in Node. Then setup custom formatting filters
+ */
+/*if (typeof exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
+    ejs = require("ejs");
   }
-
+}
   if (typeof ejs !== 'undefined') {
-    /* Filters are automatically available to ejs to be used like "... | hl7Date"
-     * Helpers are functions that we'll manually pass in to ejs.
-     * The intended distinction is that a helper gets called with regular function-call syntax
-     */ /*
-    var pad = function(number) {
+  /* Filters are automatically available to ejs to be used like "... | hl7Date"
+   * Helpers are functions that we'll manually pass in to ejs.
+   * The intended distinction is that a helper gets called with regular function-call syntax
+   */ /*
+      var pad = function(number) {
       if (number < 10) {
-        return '0' + number;
+      return '0' + number;
       }
       return String(number);
-    };
-
-    ejs.filters.hl7Date = function(obj) {
+      };
+      ejs.filters.hl7Date = function(obj) {
       try {
-          if (obj === null || obj === undefined) { return 'nullFlavor="UNK"'; }
-          var date = new Date(obj);
-          if (isNaN(date.getTime())) { return obj; }
-
+        if (obj === null || obj === undefined) { return 'nullFlavor="UNK"'; }
+        var date = new Date(obj);
+        if (isNaN(date.getTime())) { return obj; }
           var dateStr = null;
-          if (date.getHours() || date.getMinutes() || date.getSeconds()) {
-            // If there's a meaningful time, output a UTC datetime
-            dateStr = date.getUTCFullYear() +
-              pad( date.getUTCMonth() + 1 ) +
-              pad( date.getUTCDate() );
-            var timeStr = pad( date.getUTCHours() ) +
-              pad( date.getUTCMinutes() ) +
-              pad ( date.getUTCSeconds() ) +
-              "+0000";
-            return 'value="' + dateStr + timeStr + '"';
-           
-          } else {
-            // If there's no time, don't apply timezone tranformations: just output a date
-            dateStr = String(date.getFullYear()) +
-              pad( date.getMonth() + 1 ) +
-              pad( date.getDate() );
-            return 'value="' + dateStr + '"';
-          }
-
+        if (date.getHours() || date.getMinutes() || date.getSeconds()) {
+          // If there's a meaningful time, output a UTC datetime
+          dateStr = date.getUTCFullYear() +
+            pad( date.getUTCMonth() + 1 ) +
+            pad( date.getUTCDate() );
+          var timeStr = pad( date.getUTCHours() ) +
+            pad( date.getUTCMinutes() ) +
+            pad ( date.getUTCSeconds() ) +
+            "+0000";
+          return 'value="' + dateStr + timeStr + '"';
+         
+        } else {
+          // If there's no time, don't apply timezone tranformations: just output a date
+          dateStr = String(date.getFullYear()) +
+            pad( date.getMonth() + 1 ) +
+            pad( date.getDate() );
+          return 'value="' + dateStr + '"';
+        }
       } catch (e) {
-          return obj;
+        return obj;
       }
-    };
-
-    var escapeSpecialChars = function(s) {
+      };
+      var escapeSpecialChars = function(s) {
       return s.replace(/</g, '&lt;')
-              .replace(/>/g, '&gt;')
-              .replace(/&/g, '&amp;')
-              .replace(/"/g, '&quot;')
-              .replace(/'/g, '&apos;');
-    };
-
-    ejs.filters.hl7Code = function(obj) {
+            .replace(/>/g, '&gt;')
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+      };
+      ejs.filters.hl7Code = function(obj) {
       if (!obj) { return ''; }
-
       var tag = '';
       var name = obj.name || '';
       if (obj.name) { tag += 'displayName="'+escapeSpecialChars(name)+'"'; }
-
       if (obj.code) {
-        tag += ' code="'+obj.code+'"';
-        if (obj.code_system) { tag += ' codeSystem="'+escapeSpecialChars(obj.code_system)+'"'; }
-        if (obj.code_system_name) { tag += ' codeSystemName="' +
-                                        escapeSpecialChars(obj.code_system_name)+'"'; }
+      tag += ' code="'+obj.code+'"';
+      if (obj.code_system) { tag += ' codeSystem="'+escapeSpecialChars(obj.code_system)+'"'; }
+      if (obj.code_system_name) { tag += ' codeSystemName="' +
+                                      escapeSpecialChars(obj.code_system_name)+'"'; }
       } else {
-        tag += ' nullFlavor="UNK"';
+      tag += ' nullFlavor="UNK"';
       }
-
       if (!obj.name && ! obj.code) {
-        return 'nullFlavor="UNK"';
+      return 'nullFlavor="UNK"';
       }
-      
-      return tag;
-    };
-
-    ejs.filters.emptyStringIfFalsy = function(obj) {
+            return tag;
+      };
+      ejs.filters.emptyStringIfFalsy = function(obj) {
       if (!obj) { return ''; }
       return obj;
-    };
-
-    if (!ejs.helpers) ejs.helpers = {};
-    ejs.helpers.simpleTag = function(tagName, value) {
+      };
+      if (!ejs.helpers) ejs.helpers = {};
+      ejs.helpers.simpleTag = function(tagName, value) {
       if (value) {
-        return "<"+tagName+">"+value+"</"+tagName+">";
+      return "<"+tagName+">"+value+"</"+tagName+">";
       } else {
-        return "<"+tagName+" nullFlavor=\"UNK\" />";
+      return "<"+tagName+" nullFlavor=\"UNK\" />";
       }
-    };
-
-    ejs.helpers.addressTags = function(addressDict) {
+      };
+      ejs.helpers.addressTags = function(addressDict) {
       if (!addressDict) {
-        return '<streetAddressLine nullFlavor="NI" />\n' +
-                '<city nullFlavor="NI" />\n' +
-                '<state nullFlavor="NI" />\n' +
-                '<postalCode nullFlavor="NI" />\n' +
-                '<country nullFlavor="NI" />\n';
+      return '<streetAddressLine nullFlavor="NI" />\n' +
+              '<city nullFlavor="NI" />\n' +
+              '<state nullFlavor="NI" />\n' +
+              '<postalCode nullFlavor="NI" />\n' +
+              '<country nullFlavor="NI" />\n';
       }
-      
-      var tags = '';
+            var tags = '';
       if (!addressDict.street.length) {
-        tags += ejs.helpers.simpleTag('streetAddressLine', null) + '\n';
+      tags += ejs.helpers.simpleTag('streetAddressLine', null) + '\n';
       } else {
-        for (var i=0; i<addressDict.street.length; i++) {
-          tags += ejs.helpers.simpleTag('streetAddressLine', addressDict.street[i]) + '\n';
-        }
+      for (var i=0; i<addressDict.street.length; i++) {
+        tags += ejs.helpers.simpleTag('streetAddressLine', addressDict.street[i]) + '\n';
+      }
       }
       tags += ejs.helpers.simpleTag('city', addressDict.city) + '\n';
       tags += ejs.helpers.simpleTag('state', addressDict.state) + '\n';
       tags += ejs.helpers.simpleTag('postalCode', addressDict.zip) + '\n';
       tags += ejs.helpers.simpleTag('country', addressDict.country) + '\n';
       return tags;
-    };
-
-    ejs.helpers.nameTags = function(nameDict) {
+      };
+      ejs.helpers.nameTags = function(nameDict) {
       if (!nameDict) {
-        return '<given nullFlavor="NI" />\n' +
-                '<family nullFlavor="NI" />\n';
+      return '<given nullFlavor="NI" />\n' +
+              '<family nullFlavor="NI" />\n';
       }
-
       var tags = '';
       if (nameDict.prefix) {
-        tags += ejs.helpers.simpleTag('prefix', nameDict.prefix) + '\n';
+      tags += ejs.helpers.simpleTag('prefix', nameDict.prefix) + '\n';
       }
       if (!nameDict.given.length) {
-        tags += ejs.helpers.simpleTag('given', null) + '\n';
+      tags += ejs.helpers.simpleTag('given', null) + '\n';
       } else {
-        for (var i=0; i<nameDict.given.length; i++) {
-          tags += ejs.helpers.simpleTag('given', nameDict.given[i]) + '\n';
-        }
+      for (var i=0; i<nameDict.given.length; i++) {
+        tags += ejs.helpers.simpleTag('given', nameDict.given[i]) + '\n';
+      }
       }
       tags += ejs.helpers.simpleTag('family', nameDict.family) + '\n';
       if (nameDict.suffix) {
-        tags += ejs.helpers.simpleTag('suffix', nameDict.suffix) + '\n';
+      tags += ejs.helpers.simpleTag('suffix', nameDict.suffix) + '\n';
       }
       return tags;
-    };
-
-  }*/
-
+      };
+      }*/
 
 /***/ }),
 /* 15 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * ...
@@ -2161,7 +2159,7 @@ module.exports = {
 module.exports = {
   run: run
 };
-  
+
 /*
   * Generates a C32 document
   */
@@ -2175,6 +2173,9 @@ function run(json, template, testingMode) {
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 /*
  * ...
  */
@@ -2183,7 +2184,7 @@ var _ = __webpack_require__(17);
 module.exports = {
   run: run
 };
-  
+
 /*
   * Generates a CCDA document
   * A lot of the EJS setup happens in generators.js
@@ -2193,15 +2194,13 @@ module.exports = {
   */
 function run(json, template, testingMode) {
   if (!template) {
-    console.log("Please provide a template EJS file for the Generator to use. " +
-                "Load it via fs.readFileSync in Node or XHR in the browser.");
+    console.log("Please provide a template EJS file for the Generator to use. " + "Load it via fs.readFileSync in Node or XHR in the browser.");
     return null;
   }
 
   // `now` is actually now, unless we're running this for a test,
   // in which case it's always Jan 1, 2000 at 12PM UTC
-  var now = (testingMode) ?
-    new Date('2000-01-01T12:00:00Z') : new Date();
+  var now = testingMode ? new Date('2000-01-01T12:00:00Z') : new Date();
 
   var ccda = _.template(template, {
     filename: 'ccda.xml',
@@ -2223,6 +2222,9 @@ module.exports = require("lodash");
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
 /*
  * ...
  */
@@ -2231,10 +2233,10 @@ var CCD = __webpack_require__(30);
 var CCDA = __webpack_require__(32);
 var CCDAR2 = __webpack_require__(47);
 
-var method = function () {};
+var method = function method() {};
 
 /* exported Parsers */
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.method = method;
@@ -2242,11 +2244,14 @@ module.exports = function(doc) {
   self.CCD = new CCD(self.doc);
   self.CCDA = new CCDA(self.doc);
   self.CCDAR2 = new CCDAR2(self.doc);
-}; 
+};
 
 /***/ }),
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the C32 document
@@ -2265,7 +2270,7 @@ var ResultsParser = __webpack_require__(28);
 var VitalsParser = __webpack_require__(29);
 var ParseGenericInfo = __webpack_require__(1);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
 
   self.doc = doc;
@@ -2282,33 +2287,33 @@ module.exports = function(doc) {
 
   self.run = function (c32) {
     var data = {};
-    
-    data.document              = self.demographicsParser.parse(c32);
-    data.allergies             = self.allergiesParser.parse(c32);
-    data.demographics          = self.demographicsParser.parse(c32);
-    data.encounters            = self.encountersParser.parse(c32);
-    var parsedImmunizations    = self.immunizationsParser.parse(c32);
-    data.immunizations         = parsedImmunizations.administered;
+
+    data.document = self.demographicsParser.parse(c32);
+    data.allergies = self.allergiesParser.parse(c32);
+    data.demographics = self.demographicsParser.parse(c32);
+    data.encounters = self.encountersParser.parse(c32);
+    var parsedImmunizations = self.immunizationsParser.parse(c32);
+    data.immunizations = parsedImmunizations.administered;
     data.immunization_declines = parsedImmunizations.declined;
-    data.results               = self.resultsParser.parse(c32);
-    data.medications           = self.medicationsParser.parse(c32);
-    data.problems              = self.problemsParser.parse(c32);
-    data.procedures            = self.proceduresParser.parse(c32);
-    data.vitals                = self.vitals.parse(c32);
-    
-    data.json                       = Core.json;
-    data.document.json              = Core.json;
-    data.allergies.json             = Core.json;
-    data.demographics.json          = Core.json;
-    data.encounters.json            = Core.json;
-    data.immunizations.json         = Core.json;
+    data.results = self.resultsParser.parse(c32);
+    data.medications = self.medicationsParser.parse(c32);
+    data.problems = self.problemsParser.parse(c32);
+    data.procedures = self.proceduresParser.parse(c32);
+    data.vitals = self.vitals.parse(c32);
+
+    data.json = Core.json;
+    data.document.json = Core.json;
+    data.allergies.json = Core.json;
+    data.demographics.json = Core.json;
+    data.encounters.json = Core.json;
+    data.immunizations.json = Core.json;
     data.immunization_declines.json = Core.json;
-    data.results.json               = Core.json;
-    data.medications.json           = Core.json;
-    data.problems.json              = Core.json;
-    data.procedures.json            = Core.json;
-    data.vitals.json                = Core.json;
-  
+    data.results.json = Core.json;
+    data.medications.json = Core.json;
+    data.problems.json = Core.json;
+    data.procedures.json = Core.json;
+    data.vitals.json = Core.json;
+
     // Sections that are in CCDA but not C32... we want to keep the API
     // consistent, even if the entries are always null
     data.smoking_status = {
@@ -2319,34 +2324,34 @@ module.exports = function(doc) {
       code_system_name: null
     };
     data.smoking_status.json = Core.json;
-    
+
     data.chief_complaint = {
       text: null
     };
     data.chief_complaint.json = Core.json;
-  
+
     data.care_plan = [];
     data.care_plan.json = Core.json;
-  
+
     data.instructions = [];
     data.instructions.json = Core.json;
-  
+
     data.functional_statuses = [];
     data.functional_statuses.json = Core.json;
-  
+
     // Decorate each section with Title, templateId and text and adds missing sections
     ParseGenericInfo(c32, data);
-  
+
     return data;
   };
 };
 
-
-
-
 /***/ }),
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the C32 allergies section
@@ -2354,49 +2359,50 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.parse = parse;
 
   function parse(c32) {
-  
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var allergies = c32.section('allergies');
 
-    var data = {}, el;
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Allergies";
     data.templateId = allergies.tag('templateId').attr('root');
     data.text = allergies.tag('text').val(true);
 
-    allergies.entries().each(function(entry) {
-      
+    allergies.entries().each(function (entry) {
+
       el = entry.tag('effectiveTime');
       var start_date = parseDate(el.tag('low').attr('value')),
           end_date = parseDate(el.tag('high').attr('value'));
-      
+
       el = entry.template('2.16.840.1.113883.3.88.11.83.6').tag('code');
       var name = el.attr('displayName'),
           code = el.attr('code'),
           code_system = el.attr('codeSystem'),
           code_system_name = el.attr('codeSystemName');
-      
+
       // value => reaction_type
       el = entry.template('2.16.840.1.113883.3.88.11.83.6').tag('value');
       var reaction_type_name = el.attr('displayName'),
           reaction_type_code = el.attr('code'),
           reaction_type_code_system = el.attr('codeSystem'),
           reaction_type_code_system_name = el.attr('codeSystemName');
-      
+
       // reaction
       el = entry.template('2.16.840.1.113883.10.20.1.54').tag('value');
       var reaction_name = el.attr('displayName'),
           reaction_code = el.attr('code'),
           reaction_code_system = el.attr('codeSystem');
-      
+
       // an irregularity seen in some c32s
       if (!reaction_name) {
         el = entry.template('2.16.840.1.113883.10.20.1.54').tag('text');
@@ -2408,7 +2414,7 @@ module.exports = function(doc) {
       // severity
       el = entry.template('2.16.840.1.113883.10.20.1.55').tag('value');
       var severity = el.attr('displayName');
-      
+
       // participant => allergen
       el = entry.tag('participant').tag('code');
       var allergen_name = el.attr('displayName'),
@@ -2429,11 +2435,11 @@ module.exports = function(doc) {
           allergen_name = Core.stripWhitespace(el.val());
         }
       }
-      
+
       // status
       el = entry.template('2.16.840.1.113883.10.20.1.39').tag('value');
       var status = el.attr('displayName');
-      
+
       data.entries.push({
         date_range: {
           start: start_date,
@@ -2463,15 +2469,17 @@ module.exports = function(doc) {
           code_system_name: allergen_code_system_name
         }
       });
-    });  
+    });
     return data;
   }
 };
 
-
 /***/ }),
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the C32 demographics section
@@ -2479,62 +2487,63 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.parse = parse;
 
-  function parse(c32) {    
+  function parse(c32) {
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
-    var data = {}, el;
-    
+    var data = {},
+        el;
+
     var demographics = c32.section('demographics');
-    
+
     var patient = demographics.tag('patientRole');
     el = patient.tag('patient').tag('name');
     var patient_name_dict = parseName(el);
-    
+
     el = patient.tag('patient');
     var dob = parseDate(el.tag('birthTime').attr('value')),
         gender = Core.Codes.gender(el.tag('administrativeGenderCode').attr('code')),
         marital_status = Core.Codes.maritalStatus(el.tag('maritalStatusCode').attr('code'));
-    
+
     el = patient.tag('addr');
     var patient_address_dict = parseAddress(el);
-    
+
     el = patient.tag('telecom');
     var home = el.attr('value'),
         work = null,
         mobile = null;
-    
+
     var email = null;
-    
+
     var language = patient.tag('languageCommunication').tag('languageCode').attr('code'),
         race = patient.tag('raceCode').attr('displayName'),
         ethnicity = patient.tag('ethnicGroupCode').attr('displayName'),
         religion = patient.tag('religiousAffiliationCode').attr('displayName');
-    
+
     el = patient.tag('birthplace');
     var birthplace_dict = parseAddress(el);
-    
+
     el = patient.tag('guardian');
     var guardian_relationship = el.tag('code').attr('displayName'),
-      guardian_relationship_code = el.tag('code').attr('code'),
+        guardian_relationship_code = el.tag('code').attr('code'),
         guardian_home = el.tag('telecom').attr('value');
-    
+
     el = el.tag('guardianPerson').tag('name');
     var guardian_name_dict = parseName(el);
-    
+
     el = patient.tag('guardian').tag('addr');
     var guardian_address_dict = parseAddress(el);
-    
+
     el = patient.tag('providerOrganization');
     var provider_organization = el.tag('name').val(),
         provider_phone = el.tag('telecom').attr('value'),
         provider_address_dict = parseAddress(el.tag('addr'));
-    
+
     data = {
       name: patient_name_dict,
       dob: dob,
@@ -2574,15 +2583,17 @@ module.exports = function(doc) {
         address: provider_address_dict
       }
     };
-    
+
     return data;
   };
-}
-
+};
 
 /***/ }),
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the C32 document section
@@ -2590,36 +2601,34 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.parse = parse;
 
   function parse(c32) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
-    var data = {}, el;
-    
+    var data = {},
+        el;
+
     var doc = c32.section('document');
-  
+
     // Parse Doc Type Info
-    var templates =  doc.elsByTag('templateId');
+    var templates = doc.elsByTag('templateId');
     var rootTemplate = templates[0].attr('root');
     var secondTemplate;
-    if(templates.length >1)
-      secondTemplate = templates[1].attr('root');
-    else
-      secondTemplate = rootTemplate;
-  
+    if (templates.length > 1) secondTemplate = templates[1].attr('root');else secondTemplate = rootTemplate;
+
     var loinc = doc.tag('code').attr('code');
     var templateId = doc.tag('templateId').attr('root');
     var displayName = doc.tag('code').attr('displayName');
-  
+
     var nonXml = doc.tag('nonXMLBody');
     var nonXmlNodes = nonXml.el.childNodes;
-  
+
     var bodyType = "structured";
     var nonXmlBody = {
       type: "",
@@ -2628,8 +2637,8 @@ module.exports = function(doc) {
       rawText: "",
       reference: ""
     };
-  
-    if(nonXmlNodes && nonXmlNodes.length > 0) {
+
+    if (nonXmlNodes && nonXmlNodes.length > 0) {
       bodyType = "unstructured";
       var text = nonXml.tag('text');
       var mediaType = "";
@@ -2637,16 +2646,16 @@ module.exports = function(doc) {
       var rawText = "";
       var reference = "";
       var type = "";
-  
+
       // We have an embedded doc
-      if(text && text.attr('mediaType')) {
+      if (text && text.attr('mediaType')) {
         mediaType = text.attr('mediaType');
         representation = text.attr('representation');
         rawText = text.val();
         type = "embedded";
       }
-  
-      if(text && !mediaType) {
+
+      if (text && !mediaType) {
         reference = text.tag('reference').attr('value');
         type = "reference";
       }
@@ -2656,9 +2665,9 @@ module.exports = function(doc) {
         representation: representation,
         rawText: rawText,
         reference: reference
-      }
+      };
     }
-  
+
     var docType = {
       type: "CCDAR2",
       rootTemplateId: rootTemplate,
@@ -2668,25 +2677,25 @@ module.exports = function(doc) {
       bodyType: bodyType,
       nonXmlBody: nonXmlBody
     };
-    
+
     var date = parseDate(doc.tag('effectiveTime').attr('value'));
     var title = Core.stripWhitespace(doc.tag('title').val());
-    
+
     var author = doc.tag('author');
     el = author.tag('assignedPerson').tag('name');
     var name_dict = parseName(el);
     // Sometimes C32s include names that are just like <name>String</name>
     // and we still want to get something out in that case
     if (!name_dict.prefix && !name_dict.given.length && !name_dict.family) {
-     name_dict.family = el.val();
+      name_dict.family = el.val();
     }
-    
+
     el = author.tag('addr');
     var address_dict = parseAddress(el);
-    
+
     el = author.tag('telecom');
     var work_phone = el.attr('value');
-  
+
     var documentation_of_list = [];
     var performers = doc.tag('documentationOf').elsByTag('performer');
     for (var i = 0; i < performers.length; i++) {
@@ -2702,17 +2711,17 @@ module.exports = function(doc) {
         address: performer_addr
       });
     }
-  
+
     el = doc.tag('encompassingEncounter');
     var location_name = Core.stripWhitespace(el.tag('name').val());
     var location_addr_dict = parseAddress(el.tag('addr'));
-    
+
     var encounter_date = null;
     el = el.tag('effectiveTime');
     if (!el.isEmpty()) {
       encounter_date = parseDate(el.attr('value'));
     }
-    
+
     data = {
       type: docType,
       date: date,
@@ -2731,71 +2740,75 @@ module.exports = function(doc) {
         encounter_date: encounter_date
       }
     };
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 23 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the C32 encounters section
  */
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.parse = parse;
 
   function parse(c32) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var encounters = c32.section('encounters');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Encounters";
     data.templateId = encounters.tag('templateId').attr('root');
     data.text = encounters.tag('text').val(true);
-  
-    encounters.entries().each(function(entry) {
-      
+
+    encounters.entries().each(function (entry) {
+
       var date = parseDate(entry.tag('effectiveTime').attr('value'));
       if (!date) {
         date = parseDate(entry.tag('effectiveTime').tag('low').attr('value'));
       }
-      
+
       el = entry.tag('code');
       var name = el.attr('displayName'),
           code = el.attr('code'),
           code_system = el.attr('codeSystem'),
           code_system_name = el.attr('codeSystemName'),
           code_system_version = el.attr('codeSystemVersion');
-      
+
       // translation
       el = entry.tag('translation');
       var translation_name = el.attr('displayName'),
           translation_code = el.attr('code'),
           translation_code_system = el.attr('codeSystem'),
           translation_code_system_name = el.attr('codeSystemName');
-      
+
       // performer
       el = entry.tag('performer');
       var performer_name = el.tag('name').val(),
           performer_code = el.attr('code'),
           performer_code_system = el.attr('codeSystem'),
           performer_code_system_name = el.attr('codeSystemName');
-      
+
       // participant => location
       el = entry.tag('participant');
       var organization = el.tag('name').val(),
           location_dict = parseAddress(el);
       location_dict.organization = organization;
-  
+
       // findings
       var findings = [];
       var findingEls = entry.elsByTag('entryRelationship');
@@ -2807,7 +2820,7 @@ module.exports = function(doc) {
           code_system: el.attr('codeSystem')
         });
       }
-      
+
       data.entries.push({
         date: date,
         name: name,
@@ -2831,60 +2844,63 @@ module.exports = function(doc) {
         location: location_dict
       });
     });
-    
+
     return data;
   };
-}
-
+};
 
 /***/ }),
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the C32 immunizations section
  */
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.parse = parse;
 
   function parse(c32) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
-    var administeredData = {}, declinedData = {}, product, el;
-  
+    var administeredData = {},
+        declinedData = {},
+        product,
+        el;
+
     var immunizations = c32.section('immunizations');
-  
+
     administeredData.entries = [];
     administeredData.displayName = "Immunizations";
     administeredData.templateId = immunizations.tag('templateId').attr('root');
     administeredData.text = immunizations.tag('text').val(true);
-  
+
     declinedData.entries = [];
     declinedData.displayName = "Immunizations Declined";
     declinedData.templateId = immunizations.tag('templateId').attr('root');
     declinedData.text = immunizations.tag('text').val(true);
-  
-  
-    
-    immunizations.entries().each(function(entry) {
-      
+
+    immunizations.entries().each(function (entry) {
+
       // date
       el = entry.tag('effectiveTime');
       var date = parseDate(el.attr('value'));
       if (!date) {
         date = parseDate(el.tag('low').attr('value'));
       }
-  
+
       // if 'declined' is true, this is a record that this vaccine WASN'T administered
       el = entry.tag('substanceAdministration');
       var declined = el.boolAttr('negationInd');
-  
+
       // product
       product = entry.template('2.16.840.1.113883.10.20.1.53');
       el = product.tag('code');
@@ -2892,28 +2908,28 @@ module.exports = function(doc) {
           product_code = el.attr('code'),
           product_code_system = el.attr('codeSystem'),
           product_code_system_name = el.attr('codeSystemName');
-  
+
       // translation
       el = product.tag('translation');
       var translation_name = el.attr('displayName'),
           translation_code = el.attr('code'),
           translation_code_system = el.attr('codeSystem'),
           translation_code_system_name = el.attr('codeSystemName');
-  
+
       // misc product details
       el = product.tag('lotNumberText');
       var lot_number = el.val();
-  
+
       el = product.tag('manufacturerOrganization');
       var manufacturer_name = el.tag('name').val();
-      
+
       // route
       el = entry.tag('routeCode');
       var route_name = el.attr('displayName'),
           route_code = el.attr('code'),
           route_code_system = el.attr('codeSystem'),
           route_code_system_name = el.attr('codeSystemName');
-      
+
       // instructions
       el = entry.template('2.16.840.1.113883.10.20.1.49');
       var instructions_text = Core.stripWhitespace(el.tag('text').val());
@@ -2921,13 +2937,13 @@ module.exports = function(doc) {
       var education_name = el.attr('displayName'),
           education_code = el.attr('code'),
           education_code_system = el.attr('codeSystem');
-  
+
       // dose
       el = entry.tag('doseQuantity');
       var dose_value = el.attr('value'),
           dose_unit = el.attr('unit');
-      
-      var data = (declined) ? declinedData : administeredData;
+
+      var data = declined ? declinedData : administeredData;
       data.entries.push({
         date: date,
         product: {
@@ -2962,41 +2978,44 @@ module.exports = function(doc) {
         }
       });
     });
-    
+
     return {
       administered: administeredData,
       declined: declinedData
     };
   };
-}
-
+};
 
 /***/ }),
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 var Core = __webpack_require__(0);
 
 /*
  * Parser for the C32 medications section
  */
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.parse = parse;
-  
-  function parse(c32) {    
+
+  function parse(c32) {
     var parseDate = self.doc.parseDate;
     var medications = c32.section('medications');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Medications";
     data.templateId = medications.tag('templateId').attr('root');
     data.text = medications.tag('text').val(true);
-    
-    medications.entries().each(function(entry) {
-  
+
+    medications.entries().each(function (entry) {
+
       var text = null;
       el = entry.tag('substanceAdministration').immediateChildTag('text');
       if (!el.isEmpty()) {
@@ -3004,38 +3023,41 @@ module.exports = function(doc) {
         // and CCDAs do, so we may see it anyways
         text = Core.stripWhitespace(el.val());
       }
-  
+
       var effectiveTimes = entry.elsByTag('effectiveTime');
-  
+
       el = effectiveTimes[0]; // the first effectiveTime is the med start date
-      var start_date = null, end_date = null;
+      var start_date = null,
+          end_date = null;
       if (el) {
         start_date = parseDate(el.tag('low').attr('value'));
         end_date = parseDate(el.tag('high').attr('value'));
       }
-  
+
       // the second effectiveTime might the schedule period or it might just
       // be a random effectiveTime from further in the entry... xsi:type should tell us
       el = effectiveTimes[1];
-      var schedule_type = null, schedule_period_value = null, schedule_period_unit = null;
+      var schedule_type = null,
+          schedule_period_value = null,
+          schedule_period_unit = null;
       if (el && el.attr('xsi:type') === 'PIVL_TS') {
         var institutionSpecified = el.attr('institutionSpecified');
         if (institutionSpecified === 'true') {
-          schedule_type= 'frequency';
+          schedule_type = 'frequency';
         } else if (institutionSpecified === 'false') {
           schedule_type = 'interval';
         }
-  
+
         el = el.tag('period');
         schedule_period_value = el.attr('value');
         schedule_period_unit = el.attr('unit');
       }
-      
+
       el = entry.tag('manufacturedProduct').tag('code');
       var product_name = el.attr('displayName'),
           product_code = el.attr('code'),
           product_code_system = el.attr('codeSystem');
-  
+
       var product_original_text = null;
       el = entry.tag('manufacturedProduct').tag('originalText');
       if (!el.isEmpty()) {
@@ -3045,7 +3067,7 @@ module.exports = function(doc) {
       if (!product_name && product_original_text) {
         product_name = product_original_text;
       }
-  
+
       // irregularity in some c32s
       if (!product_name) {
         el = entry.tag('manufacturedProduct').tag('name');
@@ -3053,41 +3075,41 @@ module.exports = function(doc) {
           product_name = Core.stripWhitespace(el.val());
         }
       }
-      
+
       el = entry.tag('manufacturedProduct').tag('translation');
       var translation_name = el.attr('displayName'),
           translation_code = el.attr('code'),
           translation_code_system = el.attr('codeSystem'),
           translation_code_system_name = el.attr('codeSystemName');
-      
+
       el = entry.tag('doseQuantity');
       var dose_value = el.attr('value'),
           dose_unit = el.attr('unit');
-      
+
       el = entry.tag('rateQuantity');
       var rate_quantity_value = el.attr('value'),
           rate_quantity_unit = el.attr('unit');
-      
+
       el = entry.tag('precondition').tag('value');
       var precondition_name = el.attr('displayName'),
           precondition_code = el.attr('code'),
           precondition_code_system = el.attr('codeSystem');
-      
+
       el = entry.template('2.16.840.1.113883.10.20.1.28').tag('value');
       var reason_name = el.attr('displayName'),
           reason_code = el.attr('code'),
           reason_code_system = el.attr('codeSystem');
-      
+
       el = entry.tag('routeCode');
       var route_name = el.attr('displayName'),
           route_code = el.attr('code'),
           route_code_system = el.attr('codeSystem'),
           route_code_system_name = el.attr('codeSystemName');
-      
+
       // participant/playingEntity => vehicle
       el = entry.tag('participant').tag('playingEntity');
       var vehicle_name = el.tag('name').val();
-  
+
       el = el.tag('code');
       // prefer the code vehicle_name but fall back to the non-coded one
       // (which for C32s is in fact the primary field for this info)
@@ -3095,18 +3117,18 @@ module.exports = function(doc) {
       var vehicle_code = el.attr('code'),
           vehicle_code_system = el.attr('codeSystem'),
           vehicle_code_system_name = el.attr('codeSystemName');
-      
+
       el = entry.tag('administrationUnitCode');
       var administration_name = el.attr('displayName'),
           administration_code = el.attr('code'),
           administration_code_system = el.attr('codeSystem'),
           administration_code_system_name = el.attr('codeSystemName');
-      
+
       // performer => prescriber
       el = entry.tag('performer');
       var prescriber_organization = el.tag('name').val(),
           prescriber_person = null;
-      
+
       data.entries.push({
         date_range: {
           start: start_date,
@@ -3172,51 +3194,54 @@ module.exports = function(doc) {
         }
       });
     });
-    
+
     return data;
   };
-}
-
+};
 
 /***/ }),
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 var Core = __webpack_require__(0);
 
 /*
  * Parser for the C32 problems section
  */
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.parse = parse;
 
   function parse(c32) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var problems = c32.section('problems');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Problems";
     data.templateId = problems.tag('templateId').attr('root');
     data.text = problems.tag('text').val(true);
-  
-    problems.entries().each(function(entry) {
-      
+
+    problems.entries().each(function (entry) {
+
       el = entry.tag('effectiveTime');
       var start_date = parseDate(el.tag('low').attr('value')),
           end_date = parseDate(el.tag('high').attr('value'));
-      
+
       el = entry.template('2.16.840.1.113883.10.20.1.28').tag('value');
       var name = el.attr('displayName'),
           code = el.attr('code'),
           code_system = el.attr('codeSystem'),
           code_system_name = el.attr('codeSystemName');
-  
+
       // Pre-C32 CCDs put the problem name in this "originalText" field, and some vendors
       // continue doing this with their C32, even though it's not technically correct
       if (!name) {
@@ -3225,22 +3250,22 @@ module.exports = function(doc) {
           name = Core.stripWhitespace(el.val());
         }
       }
-  
+
       el = entry.template('2.16.840.1.113883.10.20.1.28').tag('translation');
       var translation_name = el.attr('displayName'),
           translation_code = el.attr('code'),
           translation_code_system = el.attr('codeSystem'),
           translation_code_system_name = el.attr('codeSystemName');
-      
+
       el = entry.template('2.16.840.1.113883.10.20.1.50');
       var status = el.tag('value').attr('displayName');
-      
+
       var age = null;
       el = entry.template('2.16.840.1.113883.10.20.1.38');
       if (!el.isEmpty()) {
         age = parseFloat(el.tag('value').attr('value'));
       }
-      
+
       data.entries.push({
         date_range: {
           start: start_date,
@@ -3261,15 +3286,17 @@ module.exports = function(doc) {
         comment: null // not part of C32
       });
     });
-    
+
     return data;
   };
-}
-
+};
 
 /***/ }),
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the C32 procedures section
@@ -3277,58 +3304,59 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.parse = parse;
 
   function parse(c32) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var procedures = c32.section('procedures');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Procedures";
     data.templateId = procedures.tag('templateId').attr('root');
     data.text = procedures.tag('text').val(true);
-    
-    procedures.entries().each(function(entry) {
-      
+
+    procedures.entries().each(function (entry) {
+
       el = entry.tag('effectiveTime');
       var date = parseDate(el.attr('value'));
-      
+
       el = entry.tag('code');
       var name = el.attr('displayName'),
           code = el.attr('code'),
           code_system = el.attr('codeSystem');
-  
+
       if (!name) {
         name = Core.stripWhitespace(entry.tag('originalText').val());
       }
-      
+
       // 'specimen' tag not always present
       el = entry.tag('specimen').tag('code');
       var specimen_name = el.attr('displayName'),
           specimen_code = el.attr('code'),
           specimen_code_system = el.attr('codeSystem');
-      
+
       el = entry.tag('performer').tag('addr');
       var organization = el.tag('name').val(),
           phone = el.tag('telecom').attr('value');
-      
+
       var performer_dict = parseAddress(el);
       performer_dict.organization = organization;
       performer_dict.phone = phone;
-      
+
       // participant => device
       el = entry.tag('participant').tag('code');
       var device_name = el.attr('displayName'),
           device_code = el.attr('code'),
           device_code_system = el.attr('codeSystem');
-      
+
       data.entries.push({
         date: date,
         name: name,
@@ -3347,14 +3375,17 @@ module.exports = function(doc) {
         }
       });
     });
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the C32 results (labs) section
@@ -3362,67 +3393,67 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.parse = parse;
 
   function parse(c32) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var results = c32.section('results');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Results";
     data.templateId = results.tag('templateId').attr('root');
     data.text = results.tag('text').val(true);
-  
-  
-    results.entries().each(function(entry) {
-      
+
+    results.entries().each(function (entry) {
+
       el = entry.tag('effectiveTime');
       var panel_date = parseDate(entry.tag('effectiveTime').attr('value'));
       if (!panel_date) {
         panel_date = parseDate(entry.tag('effectiveTime').tag('low').attr('value'));
       }
-      
+
       // panel
       el = entry.tag('code');
       var panel_name = el.attr('displayName'),
           panel_code = el.attr('code'),
           panel_code_system = el.attr('codeSystem'),
           panel_code_system_name = el.attr('codeSystemName');
-      
+
       var observation;
       var tests = entry.elsByTag('observation');
       var tests_data = [];
-      
+
       for (var i = 0; i < tests.length; i++) {
         observation = tests[i];
-        
+
         // sometimes results organizers contain non-results. we only want tests
         if (observation.template('2.16.840.1.113883.10.20.1.31').val()) {
           var date = parseDate(observation.tag('effectiveTime').attr('value'));
-          
+
           el = observation.tag('code');
           var name = el.attr('displayName'),
               code = el.attr('code'),
               code_system = el.attr('codeSystem'),
               code_system_name = el.attr('codeSystemName');
-  
+
           if (!name) {
             name = Core.stripWhitespace(observation.tag('text').val());
           }
-      
+
           el = observation.tag('translation');
           var translation_name = el.attr('displayName'),
-          translation_code = el.attr('code'),
-          translation_code_system = el.attr('codeSystem'),
-          translation_code_system_name = el.attr('codeSystemName');
-      
+              translation_code = el.attr('code'),
+              translation_code_system = el.attr('codeSystem'),
+              translation_code_system_name = el.attr('codeSystemName');
+
           el = observation.tag('value');
           var value = el.attr('value'),
               unit = el.attr('unit');
@@ -3434,14 +3465,14 @@ module.exports = function(doc) {
           if (!value) {
             value = el.val(); // look for free-text values
           }
-      
+
           el = observation.tag('referenceRange');
           var reference_range_text = Core.stripWhitespace(el.tag('observationRange').tag('text').val()),
               reference_range_low_unit = el.tag('observationRange').tag('low').attr('unit'),
               reference_range_low_value = el.tag('observationRange').tag('low').attr('value'),
               reference_range_high_unit = el.tag('observationRange').tag('high').attr('unit'),
               reference_range_high_value = el.tag('observationRange').tag('high').attr('value');
-          
+
           tests_data.push({
             date: date,
             name: name,
@@ -3461,12 +3492,12 @@ module.exports = function(doc) {
               low_unit: reference_range_low_unit,
               low_value: reference_range_low_value,
               high_unit: reference_range_high_unit,
-              high_value: reference_range_high_value,
+              high_value: reference_range_high_value
             }
           });
         }
       }
-      
+
       data.entries.push({
         name: panel_name,
         code: panel_code,
@@ -3476,61 +3507,65 @@ module.exports = function(doc) {
         tests: tests_data
       });
     });
-    
+
     return data;
-  };  
-}
+  };
+};
 
 /***/ }),
 /* 29 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the C32 vitals section
  */
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.parse = parse;
 
   function parse(c32) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var vitals = c32.section('vitals');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Vitals";
     data.templateId = vitals.tag('templateId').attr('root');
     data.text = vitals.tag('text').val(true);
-    
-    vitals.entries().each(function(entry) {
-      
+
+    vitals.entries().each(function (entry) {
+
       el = entry.tag('effectiveTime');
       var entry_date = parseDate(el.attr('value'));
-      
+
       var result;
       var results = entry.elsByTag('component');
       var results_data = [];
-      
+
       for (var j = 0; j < results.length; j++) {
         result = results[j];
-        
+
         // Results
-        
+
         el = result.tag('code');
         var name = el.attr('displayName'),
             code = el.attr('code'),
             code_system = el.attr('codeSystem'),
             code_system_name = el.attr('codeSystemName');
-        
+
         el = result.tag('value');
         var value = parseFloat(el.attr('value')),
             unit = el.attr('unit');
-        
+
         results_data.push({
           name: name,
           code: code,
@@ -3540,20 +3575,23 @@ module.exports = function(doc) {
           unit: unit
         });
       }
-      
+
       data.entries.push({
         date: entry_date,
         results: results_data
       });
     });
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDAR2 document
@@ -3565,182 +3603,184 @@ var DocumentParser = __webpack_require__(31);
 var DemographicsParser = __webpack_require__(2);
 var HealthConcernsParser = __webpack_require__(4);
 
-module.exports = function(doc) {
-  var self = this;
-  self.doc = doc;
-  self.documentParser = new DocumentParser(self.doc);
-  self.demographicsParser = new DemographicsParser(self.doc);
-  self.healthConcernsParser = new HealthConcernsParser(self.doc);
-  
-  self.run = function (ccda) {
-    var data = {};
+module.exports = function (doc) {
+    var self = this;
+    self.doc = doc;
+    self.documentParser = new DocumentParser(self.doc);
+    self.demographicsParser = new DemographicsParser(self.doc);
+    self.healthConcernsParser = new HealthConcernsParser(self.doc);
 
-    data.document              = self.documentParser.document(ccda);
-    data.demographics          = self.demographicsParser.demographics(ccda);
-    data.health_concerns_document  = self.healthConcernsParser.health_concerns_document(ccda);
-    data.json                  = Core.json;
+    self.run = function (ccda) {
+        var data = {};
 
-    // Decorate each section with Title, templateId and text and adds missing sections
-    ParseGenericInfo(ccda, data);
+        data.document = self.documentParser.document(ccda);
+        data.demographics = self.demographicsParser.demographics(ccda);
+        data.health_concerns_document = self.healthConcernsParser.health_concerns_document(ccda);
+        data.json = Core.json;
 
-    return data;
-  };
-}
+        // Decorate each section with Title, templateId and text and adds missing sections
+        ParseGenericInfo(ccda, data);
 
+        return data;
+    };
+};
 
 /***/ }),
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDAR2 document section
  */
 var Core = __webpack_require__(0);
 
-
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.document = document;
 
   function document(ccda) {
-    
-      var parseDate = self.doc.parseDate;
-      var parseName = self.doc.parseName;
-      var parseAddress = self.doc.parseAddress;
-      var data = {}, el;
-    
-      var doc = ccda.section('document');
-      var date = parseDate(doc.tag('effectiveTime').attr('value'));
-      var title = Core.stripWhitespace(doc.tag('title').val());
-    
-      // Parse Doc Type Info
-      var templates =  doc.elsByTag('templateId');
-      
-      var rootTemplate = templates[0].attr('root');
-      var secondTemplate;
-      if(templates.length >1)
-        secondTemplate = templates[1].attr('root');
-      else
-        secondTemplate = rootTemplate;
-    
-      var loinc = doc.tag('code').attr('code');
-      var templateId = doc.tag('templateId').attr('root');
-      var displayName = doc.tag('code').attr('displayName');
-    
-      var nonXml = doc.tag('nonXMLBody');
-      var nonXmlNodes = nonXml.el.childNodes;
-    
-      var bodyType = "structured";
-      var nonXmlBody = {
-        type: "",
-        mediaType: "",
-        representation: "",
-        rawText: "",
-        reference: ""
-      };
-      if(nonXmlNodes && nonXmlNodes.length > 0) {
-        bodyType = "unstructured";
-        var text = nonXml.tag('text');
-        var mediaType = "";
-        var representation = "";
-        var rawText = "";
-        var reference = "";
-        var type = "";
-    
-        // We have an embedded doc
-        if(text && text.attr('mediaType')) {
-          mediaType = text.attr('mediaType');
-          representation = text.attr('representation');
-          rawText = text.val();
-          type = "embedded";
-        }
-    
-        if(text && !mediaType) {
-          reference = text.tag('reference').attr('value');
-          type = "reference";
-        }
-        nonXmlBody = {
-          type: type,
-          mediaType: mediaType,
-          representation: representation,
-          rawText: rawText,
-          reference: reference
-        }
-      }
-    
-      var docType = {
-        type: "CCDAR2",
-        rootTemplateId: rootTemplate,
-        templateId: secondTemplate,
-        displayName: displayName,
-        loinc: loinc,
-        bodyType: bodyType,
-        nonXmlBody: nonXmlBody
-      };
-    
-      var author = doc.tag('author');
-      el = author.tag('assignedPerson').tag('name');
-      var name_dict = parseName(el);
-    
-      el = author.tag('addr');
-      var address_dict = parseAddress(el);
-    
-      el = author.tag('telecom');
-      var work_phone = el.attr('value');
-    
-      var documentation_of_list = [];
-      var performers = doc.tag('documentationOf').elsByTag('performer');
-      for (var i = 0; i < performers.length; i++) {
-        el = performers[i];
-        var performer_name_dict = parseName(el);
-        var performer_phone = el.tag('telecom').attr('value');
-        var performer_addr = parseAddress(el.tag('addr'));
-        documentation_of_list.push({
-          name: performer_name_dict,
-          phone: {
-            work: performer_phone
-          },
-          address: performer_addr
-        });
-      }
-    
-      el = doc.tag('encompassingEncounter').tag('location');
-      var location_name = Core.stripWhitespace(el.tag('name').val());
-      var location_addr_dict = parseAddress(el.tag('addr'));
-    
-      var encounter_date = null;
-      el = el.tag('effectiveTime');
-      if (!el.isEmpty()) {
-        encounter_date = parseDate(el.attr('value'));
-      }
-    
-      data = {
-        type: docType,
-        date: date,
-        title: title,
-        author: {
-          name: name_dict,
-          address: address_dict,
-          phone: {
-            work: work_phone
-          }
-        },
-        documentation_of: documentation_of_list,
-        location: {
-          name: location_name,
-          address: location_addr_dict,
-          encounter_date: encounter_date
-        }
-      };
-    
-      return data;
+
+    var parseDate = self.doc.parseDate;
+    var parseName = self.doc.parseName;
+    var parseAddress = self.doc.parseAddress;
+    var data = {},
+        el;
+
+    var doc = ccda.section('document');
+    var date = parseDate(doc.tag('effectiveTime').attr('value'));
+    var title = Core.stripWhitespace(doc.tag('title').val());
+
+    // Parse Doc Type Info
+    var templates = doc.elsByTag('templateId');
+
+    var rootTemplate = templates[0].attr('root');
+    var secondTemplate;
+    if (templates.length > 1) secondTemplate = templates[1].attr('root');else secondTemplate = rootTemplate;
+
+    var loinc = doc.tag('code').attr('code');
+    var templateId = doc.tag('templateId').attr('root');
+    var displayName = doc.tag('code').attr('displayName');
+
+    var nonXml = doc.tag('nonXMLBody');
+    var nonXmlNodes = nonXml.el.childNodes;
+
+    var bodyType = "structured";
+    var nonXmlBody = {
+      type: "",
+      mediaType: "",
+      representation: "",
+      rawText: "",
+      reference: ""
     };
-}
+    if (nonXmlNodes && nonXmlNodes.length > 0) {
+      bodyType = "unstructured";
+      var text = nonXml.tag('text');
+      var mediaType = "";
+      var representation = "";
+      var rawText = "";
+      var reference = "";
+      var type = "";
+
+      // We have an embedded doc
+      if (text && text.attr('mediaType')) {
+        mediaType = text.attr('mediaType');
+        representation = text.attr('representation');
+        rawText = text.val();
+        type = "embedded";
+      }
+
+      if (text && !mediaType) {
+        reference = text.tag('reference').attr('value');
+        type = "reference";
+      }
+      nonXmlBody = {
+        type: type,
+        mediaType: mediaType,
+        representation: representation,
+        rawText: rawText,
+        reference: reference
+      };
+    }
+
+    var docType = {
+      type: "CCDAR2",
+      rootTemplateId: rootTemplate,
+      templateId: secondTemplate,
+      displayName: displayName,
+      loinc: loinc,
+      bodyType: bodyType,
+      nonXmlBody: nonXmlBody
+    };
+
+    var author = doc.tag('author');
+    el = author.tag('assignedPerson').tag('name');
+    var name_dict = parseName(el);
+
+    el = author.tag('addr');
+    var address_dict = parseAddress(el);
+
+    el = author.tag('telecom');
+    var work_phone = el.attr('value');
+
+    var documentation_of_list = [];
+    var performers = doc.tag('documentationOf').elsByTag('performer');
+    for (var i = 0; i < performers.length; i++) {
+      el = performers[i];
+      var performer_name_dict = parseName(el);
+      var performer_phone = el.tag('telecom').attr('value');
+      var performer_addr = parseAddress(el.tag('addr'));
+      documentation_of_list.push({
+        name: performer_name_dict,
+        phone: {
+          work: performer_phone
+        },
+        address: performer_addr
+      });
+    }
+
+    el = doc.tag('encompassingEncounter').tag('location');
+    var location_name = Core.stripWhitespace(el.tag('name').val());
+    var location_addr_dict = parseAddress(el.tag('addr'));
+
+    var encounter_date = null;
+    el = el.tag('effectiveTime');
+    if (!el.isEmpty()) {
+      encounter_date = parseDate(el.attr('value'));
+    }
+
+    data = {
+      type: docType,
+      date: date,
+      title: title,
+      author: {
+        name: name_dict,
+        address: address_dict,
+        phone: {
+          work: work_phone
+        }
+      },
+      documentation_of: documentation_of_list,
+      location: {
+        name: location_name,
+        address: location_addr_dict,
+        encounter_date: encounter_date
+      }
+    };
+
+    return data;
+  };
+};
 
 /***/ }),
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 var Core = __webpack_require__(0);
 var AllergiesParser = __webpack_require__(33);
@@ -3764,7 +3804,7 @@ var ParseGenericInfo = __webpack_require__(1);
 /*
  * Parser for the CCDA document
  */
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
   self.allergiesParser = new AllergiesParser(self.doc);
@@ -3783,57 +3823,58 @@ module.exports = function(doc) {
   self.smokingStatusParser = new SmokingStatusParser(self.doc);
   self.vitalsParser = new VitalsParser(self.doc);
 
-
   self.run = function (ccda) {
     var data = {};
-    
-    data.document              = self.documentParser.document(ccda);
-    data.allergies             = self.allergiesParser.allergies(ccda);
-    data.care_plan             = self.carePlanParser.care_plan(ccda);
-    data.chief_complaint       = self.freeTextParser.free_text(ccda, 'chief_complaint');
-    data.demographics          = self.demographicsParser.demographics(ccda);
-    data.encounters            = self.encountersParser.encounters(ccda);
-    data.functional_statuses   = self.functionalStatusesParser.functional_statuses(ccda);
-    var parsedImmunizations    = self.immunizationsParser.immunizations(ccda);
-    data.immunizations         = parsedImmunizations.administered;
+
+    data.document = self.documentParser.document(ccda);
+    data.allergies = self.allergiesParser.allergies(ccda);
+    data.care_plan = self.carePlanParser.care_plan(ccda);
+    data.chief_complaint = self.freeTextParser.free_text(ccda, 'chief_complaint');
+    data.demographics = self.demographicsParser.demographics(ccda);
+    data.encounters = self.encountersParser.encounters(ccda);
+    data.functional_statuses = self.functionalStatusesParser.functional_statuses(ccda);
+    var parsedImmunizations = self.immunizationsParser.immunizations(ccda);
+    data.immunizations = parsedImmunizations.administered;
     data.immunization_declines = parsedImmunizations.declined;
-    data.instructions          = self.instructionsParser.instructions(ccda);
-    data.results               = self.resultsParser.results(ccda);
-    data.medications           = self.medicationsParser.medications(ccda);
-    data.problems              = self.problemsParser.problems(ccda);
-    data.procedures            = self.proceduresParser.procedures(ccda);
-    data.smoking_status        = self.smokingStatusParser.smoking_status(ccda);
-    data.vitals                = self.vitalsParser.vitals(ccda);
-    
-    data.json                        = Core.json;
-    data.document.json               = Core.json;
-    data.allergies.json              = Core.json;
-    data.care_plan.json              = Core.json;
-    data.chief_complaint.json        = Core.json;
-    data.demographics.json           = Core.json;
-    data.encounters.json             = Core.json;
-    data.functional_statuses.json    = Core.json;
-    data.immunizations.json          = Core.json;
-    data.immunization_declines.json  = Core.json;
-    data.instructions.json           = Core.json;
-    data.results.json                = Core.json;
-    data.medications.json            = Core.json;
-    data.problems.json               = Core.json;
-    data.procedures.json             = Core.json;
-    data.smoking_status.json         = Core.json;
-    data.vitals.json                 = Core.json;
+    data.instructions = self.instructionsParser.instructions(ccda);
+    data.results = self.resultsParser.results(ccda);
+    data.medications = self.medicationsParser.medications(ccda);
+    data.problems = self.problemsParser.problems(ccda);
+    data.procedures = self.proceduresParser.procedures(ccda);
+    data.smoking_status = self.smokingStatusParser.smoking_status(ccda);
+    data.vitals = self.vitalsParser.vitals(ccda);
+
+    data.json = Core.json;
+    data.document.json = Core.json;
+    data.allergies.json = Core.json;
+    data.care_plan.json = Core.json;
+    data.chief_complaint.json = Core.json;
+    data.demographics.json = Core.json;
+    data.encounters.json = Core.json;
+    data.functional_statuses.json = Core.json;
+    data.immunizations.json = Core.json;
+    data.immunization_declines.json = Core.json;
+    data.instructions.json = Core.json;
+    data.results.json = Core.json;
+    data.medications.json = Core.json;
+    data.problems.json = Core.json;
+    data.procedures.json = Core.json;
+    data.smoking_status.json = Core.json;
+    data.vitals.json = Core.json;
 
     // Decorate each section with Title, templateId and text and adds missing sections
     ParseGenericInfo(ccda, data);
 
     return data;
   };
-}
-
+};
 
 /***/ }),
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA allergies section
@@ -3841,59 +3882,60 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
-  
+
   self.allergies = function (ccda) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var allergies = ccda.section('allergies');
-  
-      var data = {}, el;
-      data.entries = [];
-      data.displayName = "Allergies";
-      data.templateId = allergies.tag('templateId').attr('root');
-      data.text = allergies.tag('text').val(true);
-    
-    allergies.entries().each(function(entry) {
-      
+
+    var data = {},
+        el;
+    data.entries = [];
+    data.displayName = "Allergies";
+    data.templateId = allergies.tag('templateId').attr('root');
+    data.text = allergies.tag('text').val(true);
+
+    allergies.entries().each(function (entry) {
+
       el = entry.tag('effectiveTime');
       var start_date = parseDate(el.tag('low').attr('value')),
           end_date = parseDate(el.tag('high').attr('value'));
-      
+
       el = entry.template('2.16.840.1.113883.10.20.22.4.7').tag('code');
       var name = el.attr('displayName'),
           code = el.attr('code'),
           code_system = el.attr('codeSystem'),
           code_system_name = el.attr('codeSystemName');
-      
+
       // value => reaction_type
       el = entry.template('2.16.840.1.113883.10.20.22.4.7').tag('value');
       var reaction_type_name = el.attr('displayName'),
           reaction_type_code = el.attr('code'),
           reaction_type_code_system = el.attr('codeSystem'),
           reaction_type_code_system_name = el.attr('codeSystemName');
-      
+
       // reaction
       el = entry.template('2.16.840.1.113883.10.20.22.4.9').tag('value');
       var reaction_name = el.attr('displayName'),
           reaction_code = el.attr('code'),
           reaction_code_system = el.attr('codeSystem');
-      
+
       // severity
       el = entry.template('2.16.840.1.113883.10.20.22.4.8').tag('value');
       var severity = el.attr('displayName');
-      
+
       // participant => allergen
       el = entry.tag('participant').tag('code');
       var allergen_name = el.attr('displayName'),
           allergen_code = el.attr('code'),
           allergen_code_system = el.attr('codeSystem'),
           allergen_code_system_name = el.attr('codeSystemName');
-  
+
       // this is not a valid place to store the allergen name but some vendors use it
       if (!allergen_name) {
         el = entry.tag('participant').tag('name');
@@ -3907,11 +3949,11 @@ module.exports = function(doc) {
           allergen_name = Core.stripWhitespace(el.val());
         }
       }
-      
+
       // status
       el = entry.template('2.16.840.1.113883.10.20.22.4.28').tag('value');
       var status = el.attr('displayName');
-      
+
       data.entries.push({
         date_range: {
           start: start_date,
@@ -3942,14 +3984,17 @@ module.exports = function(doc) {
         }
       });
     });
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA "plan of care" section
@@ -3957,43 +4002,45 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
     var self = this;
     self.doc = doc;
 
-    self.care_plan = function (ccda) {        
-        var data = [], el;
-    
-        var data = {}, el;
+    self.care_plan = function (ccda) {
+        var data = [],
+            el;
+
+        var data = {},
+            el;
         care_plan = ccda.section('care_plan');
         data.entries = [];
         data.displayName = "Care Plan";
         data.templateId = care_plan.tag('templateId').attr('root');
         data.text = care_plan.tag('text').val(true);
-    
+
         care_plan.entries().each(function (entry) {
-    
+
             var name = null,
                 code = null,
                 code_system = null,
                 code_system_name = null;
-    
+
             // Plan of care encounters, which have no other details
             el = entry.template('2.16.840.1.113883.10.20.22.4.40');
             if (!el.isEmpty()) {
                 name = 'encounter';
             } else {
                 el = entry.tag('code');
-    
+
                 name = el.attr('displayName');
                 code = el.attr('code');
                 code_system = el.attr('codeSystem');
                 code_system_name = el.attr('codeSystemName');
             }
-    
+
             var text = Core.stripWhitespace(entry.tag('text').val(true));
             var time = entry.tag('effectiveTime').immediateChildTag('center').attr('value');
-    
+
             data.entries.push({
                 text: text,
                 name: name,
@@ -4003,23 +4050,26 @@ module.exports = function(doc) {
                 effective_time: parse(time)
             });
         });
-    
+
         return data;
-    
+
         function parse(str) {
             if (!str) return null;
             var y = str.substr(0, 4),
                 m = str.substr(4, 2) - 1,
                 d = str.substr(6, 2);
             var D = new Date(y, m, d);
-            return (D.getFullYear() == y && D.getMonth() == m && D.getDate() == d) ? D : null;
+            return D.getFullYear() == y && D.getMonth() == m && D.getDate() == d ? D : null;
         }
     };
-}
+};
 
 /***/ }),
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA document section
@@ -4027,36 +4077,33 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
 
   self.document = function (ccda) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
-    var data = {}, el;
-    
+    var data = {},
+        el;
+
     var doc = ccda.section('document');
-  
-  
+
     // Parse Doc Type Info
-    var templates =  doc.elsByTag('templateId');
+    var templates = doc.elsByTag('templateId');
     var rootTemplate = templates[0].attr('root');
     var secondTemplate;
-    if(templates.length >1)
-      secondTemplate = templates[1].attr('root');
-    else
-      secondTemplate = rootTemplate;
-  
+    if (templates.length > 1) secondTemplate = templates[1].attr('root');else secondTemplate = rootTemplate;
+
     var loinc = doc.tag('code').attr('code');
     var templateId = doc.tag('templateId').attr('root');
     var displayName = doc.tag('code').attr('displayName');
-  
+
     var nonXml = doc.tag('nonXMLBody');
     var nonXmlNodes = nonXml.el.childNodes;
-  
+
     var bodyType = "structured";
     var nonXmlBody = {
       type: "",
@@ -4065,7 +4112,7 @@ module.exports = function(doc) {
       rawText: "",
       reference: ""
     };
-    if(nonXmlNodes && nonXmlNodes.length > 0) {
+    if (nonXmlNodes && nonXmlNodes.length > 0) {
       bodyType = "unstructured";
       var text = nonXml.tag('text');
       var mediaType = "";
@@ -4073,17 +4120,17 @@ module.exports = function(doc) {
       var rawText = "";
       var reference = "";
       var type = "";
-  
+
       // We have an embedded doc
-      if(text && text.attr('mediaType')) {
+      if (text && text.attr('mediaType')) {
         mediaType = text.attr('mediaType');
         representation = text.attr('representation');
         rawText = text.val();
         type = "embedded";
       }
-  
-      if(text && !mediaType) {
-         reference = text.tag('reference').attr('value');
+
+      if (text && !mediaType) {
+        reference = text.tag('reference').attr('value');
         type = "reference";
       }
       nonXmlBody = {
@@ -4092,9 +4139,9 @@ module.exports = function(doc) {
         representation: representation,
         rawText: rawText,
         reference: reference
-      }
+      };
     }
-  
+
     var docType = {
       type: "CCDAR2",
       rootTemplateId: rootTemplate,
@@ -4104,20 +4151,20 @@ module.exports = function(doc) {
       bodyType: bodyType,
       nonXmlBody: nonXmlBody
     };
-  
+
     var date = parseDate(doc.tag('effectiveTime').attr('value'));
     var title = Core.stripWhitespace(doc.tag('title').val());
-    
+
     var author = doc.tag('author');
     el = author.tag('assignedPerson').tag('name');
     var name_dict = parseName(el);
-    
+
     el = author.tag('addr');
     var address_dict = parseAddress(el);
-    
+
     el = author.tag('telecom');
     var work_phone = el.attr('value');
-  
+
     var documentation_of_list = [];
     var performers = doc.tag('documentationOf').elsByTag('performer');
     for (var i = 0; i < performers.length; i++) {
@@ -4133,17 +4180,17 @@ module.exports = function(doc) {
         address: performer_addr
       });
     }
-  
+
     el = doc.tag('encompassingEncounter').tag('location');
     var location_name = Core.stripWhitespace(el.tag('name').val());
     var location_addr_dict = parseAddress(el.tag('addr'));
-    
+
     var encounter_date = null;
     el = el.tag('effectiveTime');
     if (!el.isEmpty()) {
       encounter_date = parseDate(el.attr('value'));
     }
-    
+
     data = {
       type: docType,
       date: date,
@@ -4162,68 +4209,72 @@ module.exports = function(doc) {
         encounter_date: encounter_date
       }
     };
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 36 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA encounters section
  */
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
 
   self.encounters = function (ccda) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var encounters = ccda.section('encounters');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Encounters";
     data.templateId = encounters.tag('templateId').attr('root');
     data.text = encounters.tag('text').val(true);
-    
-    encounters.entries().each(function(entry) {
-      
+
+    encounters.entries().each(function (entry) {
+
       var date = parseDate(entry.tag('effectiveTime').attr('value'));
-      
+
       el = entry.tag('code');
       var name = el.attr('displayName'),
           code = el.attr('code'),
           code_system = el.attr('codeSystem'),
           code_system_name = el.attr('codeSystemName'),
           code_system_version = el.attr('codeSystemVersion');
-      
+
       // translation
       el = entry.tag('translation');
       var translation_name = el.attr('displayName'),
           translation_code = el.attr('code'),
           translation_code_system = el.attr('codeSystem'),
           translation_code_system_name = el.attr('codeSystemName');
-      
+
       // performer
       el = entry.tag('performer').tag('code');
       var performer_name = el.attr('displayName'),
           performer_code = el.attr('code'),
           performer_code_system = el.attr('codeSystem'),
           performer_code_system_name = el.attr('codeSystemName');
-    
+
       // participant => location
       el = entry.tag('participant');
       var organization = el.tag('code').attr('displayName');
-      
+
       var location_dict = parseAddress(el);
       location_dict.organization = organization;
-  
+
       // findings
       var findings = [];
       var findingEls = entry.elsByTag('entryRelationship');
@@ -4235,7 +4286,7 @@ module.exports = function(doc) {
           code_system: el.attr('codeSystem')
         });
       }
-      
+
       data.entries.push({
         date: date,
         name: name,
@@ -4259,14 +4310,17 @@ module.exports = function(doc) {
         location: location_dict
       });
     });
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for any freetext section (i.e., contains just a single <text> element)
@@ -4274,57 +4328,60 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function() {
+module.exports = function () {
   var self = this;
 
-  self.free_text = function (ccda, sectionName) {    
+  self.free_text = function (ccda, sectionName) {
     var data = {};
-    
+
     var doc = ccda.section(sectionName);
     var text = Core.stripWhitespace(doc.tag('text').val(true));
-    
+
     data = {
       text: text
     };
 
     return data;
   };
-}
-
+};
 
 /***/ }),
 /* 38 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA functional & cognitive status
  */
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
 
   self.functional_statuses = function (ccda) {
-    
+
     var parseDate = self.doc.parseDate;
-    var data = [], el;
-  
+    var data = [],
+        el;
+
     var statuses = ccda.section('functional_statuses');
-  
-    statuses.entries().each(function(entry) {
-  
+
+    statuses.entries().each(function (entry) {
+
       var date = parseDate(entry.tag('effectiveTime').attr('value'));
       if (!date) {
         date = parseDate(entry.tag('effectiveTime').tag('low').attr('value'));
       }
-  
+
       el = entry.tag('value');
-  
+
       var name = el.attr('displayName'),
           code = el.attr('code'),
           code_system = el.attr('codeSystem'),
           code_system_name = el.attr('codeSystemName');
-  
+
       data.push({
         date: date,
         name: name,
@@ -4332,16 +4389,18 @@ module.exports = function(doc) {
         code_system: code_system,
         code_system_name: code_system_name
       });
-    
     });
-    
+
     return data;
-  };  
-}
+  };
+};
 
 /***/ }),
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA immunizations section
@@ -4349,41 +4408,44 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
 
-  self.immunizations = function (ccda) {    
+  self.immunizations = function (ccda) {
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
-    var administeredData = {}, declinedData = {}, product, el;
-  
+    var administeredData = {},
+        declinedData = {},
+        product,
+        el;
+
     var immunizations = ccda.section('immunizations');
-  
+
     administeredData.entries = [];
     administeredData.displayName = "Immunizations";
     administeredData.templateId = immunizations.tag('templateId').attr('root');
     administeredData.text = immunizations.tag('text').val(true);
-  
+
     declinedData.entries = [];
     declinedData.displayName = "Immunizations Declined";
     declinedData.templateId = immunizations.tag('templateId').attr('root');
     declinedData.text = immunizations.tag('text').val(true);
-    
-    immunizations.entries().each(function(entry) {
-      
+
+    immunizations.entries().each(function (entry) {
+
       // date
       el = entry.tag('effectiveTime');
       var date = parseDate(el.attr('value'));
       if (!date) {
         date = parseDate(el.tag('low').attr('value'));
       }
-  
+
       // if 'declined' is true, this is a record that this vaccine WASN'T administered
       el = entry.tag('substanceAdministration');
       var declined = el.boolAttr('negationInd');
-  
+
       // product
       product = entry.template('2.16.840.1.113883.10.20.22.4.54');
       el = product.tag('code');
@@ -4391,28 +4453,28 @@ module.exports = function(doc) {
           product_code = el.attr('code'),
           product_code_system = el.attr('codeSystem'),
           product_code_system_name = el.attr('codeSystemName');
-  
+
       // translation
       el = product.tag('translation');
       var translation_name = el.attr('displayName'),
           translation_code = el.attr('code'),
           translation_code_system = el.attr('codeSystem'),
           translation_code_system_name = el.attr('codeSystemName');
-  
+
       // misc product details
       el = product.tag('lotNumberText');
       var lot_number = el.val();
-  
+
       el = product.tag('manufacturerOrganization');
       var manufacturer_name = el.tag('name').val();
-      
+
       // route
       el = entry.tag('routeCode');
       var route_name = el.attr('displayName'),
           route_code = el.attr('code'),
           route_code_system = el.attr('codeSystem'),
           route_code_system_name = el.attr('codeSystemName');
-      
+
       // instructions
       el = entry.template('2.16.840.1.113883.10.20.22.4.20');
       var instructions_text = Core.stripWhitespace(el.tag('text').val());
@@ -4420,13 +4482,13 @@ module.exports = function(doc) {
       var education_name = el.attr('displayName'),
           education_code = el.attr('code'),
           education_code_system = el.attr('codeSystem');
-  
+
       // dose
       el = entry.tag('doseQuantity');
       var dose_value = el.attr('value'),
           dose_unit = el.attr('unit');
-      
-      var data = (declined) ? declinedData : administeredData;
+
+      var data = declined ? declinedData : administeredData;
       data.entries.push({
         date: date,
         product: {
@@ -4461,20 +4523,20 @@ module.exports = function(doc) {
         }
       });
     });
-    
+
     return {
       administered: administeredData,
       declined: declinedData
     };
   };
-}
-
-
-
+};
 
 /***/ }),
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA "plan of care" section
@@ -4482,26 +4544,27 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function() {
+module.exports = function () {
   var self = this;
-  
+
   self.instructions = function (ccda) {
-    
-    var data = [], el;
-    
+
+    var data = [],
+        el;
+
     var instructions = ccda.section('instructions');
     data.templateId = instructions.tag('templateId').attr('root');
-    
-    instructions.entries().each(function(entry) {
-  
+
+    instructions.entries().each(function (entry) {
+
       el = entry.tag('code');
       var name = el.attr('displayName'),
           code = el.attr('code'),
           code_system = el.attr('codeSystem'),
           code_system_name = el.attr('codeSystemName');
-  
+
       var text = Core.stripWhitespace(entry.tag('text').val(true));
-      
+
       data.push({
         text: text,
         name: name,
@@ -4510,14 +4573,17 @@ module.exports = function() {
         code_system_name: code_system_name
       });
     });
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 41 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA medications section
@@ -4530,52 +4596,56 @@ module.exports = function (doc) {
   self.doc = doc;
 
   self.medications = function (ccda) {
-    
+
     var parseDate = self.doc.parseDate;
     var medications = ccda.section('medications');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Medications";
     data.templateId = medications.tag('templateId').attr('root');
     data.text = medications.tag('text').val(true);
-  
-    medications.entries().each(function(entry) {
-      
+
+    medications.entries().each(function (entry) {
+
       el = entry.tag('text');
       var sig = Core.stripWhitespace(el.val());
-  
+
       var effectiveTimes = entry.elsByTag('effectiveTime');
-  
+
       el = effectiveTimes[0]; // the first effectiveTime is the med start date
-      var start_date = null, end_date = null;
+      var start_date = null,
+          end_date = null;
       if (el) {
         start_date = parseDate(el.tag('low').attr('value'));
         end_date = parseDate(el.tag('high').attr('value'));
       }
-  
+
       // the second effectiveTime might the schedule period or it might just
       // be a random effectiveTime from further in the entry... xsi:type should tell us
       el = effectiveTimes[1];
-      var schedule_type = null, schedule_period_value = null, schedule_period_unit = null;
+      var schedule_type = null,
+          schedule_period_value = null,
+          schedule_period_unit = null;
       if (el && el.attr('xsi:type') === 'PIVL_TS') {
         var institutionSpecified = el.attr('institutionSpecified');
         if (institutionSpecified === 'true') {
-          schedule_type= 'frequency';
+          schedule_type = 'frequency';
         } else if (institutionSpecified === 'false') {
           schedule_type = 'interval';
         }
-  
+
         el = el.tag('period');
         schedule_period_value = el.attr('value');
         schedule_period_unit = el.attr('unit');
       }
-      
+
       el = entry.tag('manufacturedProduct').tag('code');
       var product_name = el.attr('displayName'),
           product_code = el.attr('code'),
           product_code_system = el.attr('codeSystem');
-  
+
       var product_original_text = null;
       el = entry.tag('manufacturedProduct').tag('originalText');
       if (!el.isEmpty()) {
@@ -4585,59 +4655,59 @@ module.exports = function (doc) {
       if (!product_name && product_original_text) {
         product_name = product_original_text;
       }
-      
+
       el = entry.tag('manufacturedProduct').tag('translation');
       var translation_name = el.attr('displayName'),
           translation_code = el.attr('code'),
           translation_code_system = el.attr('codeSystem'),
           translation_code_system_name = el.attr('codeSystemName');
-      
+
       el = entry.tag('doseQuantity');
       var dose_value = el.attr('value'),
           dose_unit = el.attr('unit');
-      
+
       el = entry.tag('rateQuantity');
       var rate_quantity_value = el.attr('value'),
           rate_quantity_unit = el.attr('unit');
-      
+
       el = entry.tag('precondition').tag('value');
       var precondition_name = el.attr('displayName'),
           precondition_code = el.attr('code'),
           precondition_code_system = el.attr('codeSystem');
-      
+
       el = entry.template('2.16.840.1.113883.10.20.22.4.19').tag('value');
       var reason_name = el.attr('displayName'),
           reason_code = el.attr('code'),
           reason_code_system = el.attr('codeSystem');
-      
+
       el = entry.tag('routeCode');
       var route_name = el.attr('displayName'),
           route_code = el.attr('code'),
           route_code_system = el.attr('codeSystem'),
           route_code_system_name = el.attr('codeSystemName');
-      
+
       // participant/playingEntity => vehicle
       el = entry.tag('participant').tag('playingEntity');
       var vehicle_name = el.tag('name').val();
-  
+
       el = el.tag('code');
       // prefer the code vehicle_name but fall back to the non-coded one
       vehicle_name = el.attr('displayName') || vehicle_name;
       var vehicle_code = el.attr('code'),
           vehicle_code_system = el.attr('codeSystem'),
           vehicle_code_system_name = el.attr('codeSystemName');
-      
+
       el = entry.tag('administrationUnitCode');
       var administration_name = el.attr('displayName'),
           administration_code = el.attr('code'),
           administration_code_system = el.attr('codeSystem'),
           administration_code_system_name = el.attr('codeSystemName');
-      
+
       // performer => prescriber
       el = entry.tag('performer');
       var prescriber_organization = el.tag('name').val(),
           prescriber_person = null;
-      
+
       data.entries.push({
         date_range: {
           start: start_date,
@@ -4703,15 +4773,17 @@ module.exports = function (doc) {
         }
       });
     });
-    
+
     return data;
   };
-}
-
+};
 
 /***/ }),
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA problems section
@@ -4719,54 +4791,55 @@ module.exports = function (doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
 
   self.problems = function (ccda) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
-  
+
     var problems = ccda.section('problems');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Problems";
     data.templateId = problems.tag('templateId').attr('root');
     data.text = problems.tag('text').val(true);
-    
-    problems.entries().each(function(entry) {
-      
+
+    problems.entries().each(function (entry) {
+
       el = entry.tag('effectiveTime');
       var start_date = parseDate(el.tag('low').attr('value')),
           end_date = parseDate(el.tag('high').attr('value'));
-      
+
       el = entry.template('2.16.840.1.113883.10.20.22.4.4').tag('value');
       var name = el.attr('displayName'),
           code = el.attr('code'),
           code_system = el.attr('codeSystem'),
           code_system_name = el.attr('codeSystemName');
-      
+
       el = entry.template('2.16.840.1.113883.10.20.22.4.4').tag('translation');
       var translation_name = el.attr('displayName'),
-        translation_code = el.attr('code'),
-        translation_code_system = el.attr('codeSystem'),
-        translation_code_system_name = el.attr('codeSystemName');
-      
+          translation_code = el.attr('code'),
+          translation_code_system = el.attr('codeSystem'),
+          translation_code_system_name = el.attr('codeSystemName');
+
       el = entry.template('2.16.840.1.113883.10.20.22.4.6');
       var status = el.tag('value').attr('displayName');
-      
+
       var age = null;
       el = entry.template('2.16.840.1.113883.10.20.22.4.31');
       if (!el.isEmpty()) {
         age = parseFloat(el.tag('value').attr('value'));
       }
-  
+
       el = entry.template('2.16.840.1.113883.10.20.22.4.64');
       var comment = Core.stripWhitespace(el.tag('text').val());
-      
+
       data.entries.push({
         date_range: {
           start: start_date,
@@ -4787,15 +4860,17 @@ module.exports = function(doc) {
         comment: comment
       });
     });
-    
+
     return data;
   };
-}
-
+};
 
 /***/ }),
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA procedures section
@@ -4803,57 +4878,58 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
 
   self.procedures = function (ccda) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var procedures = ccda.section('procedures');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Procedures";
     data.templateId = procedures.tag('templateId').attr('root');
     data.text = procedures.tag('text').val(true);
-    
-    procedures.entries().each(function(entry) {
-      
+
+    procedures.entries().each(function (entry) {
+
       el = entry.tag('effectiveTime');
       var date = parseDate(el.attr('value'));
-      
+
       el = entry.tag('code');
       var name = el.attr('displayName'),
           code = el.attr('code'),
           code_system = el.attr('codeSystem');
-  
+
       if (!name) {
         name = Core.stripWhitespace(entry.tag('originalText').val());
       }
-      
+
       // 'specimen' tag not always present
       el = entry.tag('specimen').tag('code');
       var specimen_name = el.attr('displayName'),
           specimen_code = el.attr('code'),
           specimen_code_system = el.attr('codeSystem');
-      
+
       el = entry.tag('performer').tag('addr');
       var organization = el.tag('name').val(),
           phone = el.tag('telecom').attr('value');
-      
+
       var performer_dict = parseAddress(el);
       performer_dict.organization = organization;
       performer_dict.phone = phone;
-      
+
       // participant => device
       el = entry.template('2.16.840.1.113883.10.20.22.4.37').tag('code');
       var device_name = el.attr('displayName'),
           device_code = el.attr('code'),
           device_code_system = el.attr('codeSystem');
-      
+
       data.entries.push({
         date: date,
         name: name,
@@ -4872,14 +4948,17 @@ module.exports = function(doc) {
         }
       });
     });
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 44 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA results (labs) section
@@ -4887,57 +4966,58 @@ module.exports = function(doc) {
 
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
 
   self.results = function (ccda) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var results = ccda.section('results');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Results";
     data.templateId = results.tag('templateId').attr('root');
     data.text = results.tag('text').val(true);
-    
-    results.entries().each(function(entry) {
-      
+
+    results.entries().each(function (entry) {
+
       // panel
       el = entry.tag('code');
       var panel_name = el.attr('displayName'),
           panel_code = el.attr('code'),
           panel_code_system = el.attr('codeSystem'),
           panel_code_system_name = el.attr('codeSystemName');
-      
+
       var observation;
       var tests = entry.elsByTag('observation');
       var tests_data = [];
-      
+
       for (var i = 0; i < tests.length; i++) {
         observation = tests[i];
-        
+
         var date = parseDate(observation.tag('effectiveTime').attr('value'));
-        
+
         el = observation.tag('code');
         var name = el.attr('displayName'),
             code = el.attr('code'),
             code_system = el.attr('codeSystem'),
             code_system_name = el.attr('codeSystemName');
-  
+
         if (!name) {
           name = Core.stripWhitespace(observation.tag('text').val());
         }
-        
+
         el = observation.tag('translation');
         var translation_name = el.attr('displayName'),
-          translation_code = el.attr('code'),
-          translation_code_system = el.attr('codeSystem'),
-          translation_code_system_name = el.attr('codeSystemName');
-      
+            translation_code = el.attr('code'),
+            translation_code_system = el.attr('codeSystem'),
+            translation_code_system_name = el.attr('codeSystemName');
+
         el = observation.tag('value');
         var value = el.attr('value'),
             unit = el.attr('unit');
@@ -4949,14 +5029,14 @@ module.exports = function(doc) {
         if (!value) {
           value = el.val(); // look for free-text values
         }
-        
+
         el = observation.tag('referenceRange');
         var reference_range_text = Core.stripWhitespace(el.tag('observationRange').tag('text').val()),
             reference_range_low_unit = el.tag('observationRange').tag('low').attr('unit'),
             reference_range_low_value = el.tag('observationRange').tag('low').attr('value'),
             reference_range_high_unit = el.tag('observationRange').tag('high').attr('unit'),
             reference_range_high_value = el.tag('observationRange').tag('high').attr('value');
-        
+
         tests_data.push({
           date: date,
           name: name,
@@ -4976,11 +5056,11 @@ module.exports = function(doc) {
             low_unit: reference_range_low_unit,
             low_value: reference_range_low_value,
             high_unit: reference_range_high_unit,
-            high_value: reference_range_high_value,
+            high_value: reference_range_high_value
           }
         });
       }
-      
+
       data.entries.push({
         name: panel_name,
         code: panel_code,
@@ -4989,45 +5069,48 @@ module.exports = function(doc) {
         tests: tests_data
       });
     });
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 45 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA smoking status in social history section
  */
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
 
   self.smoking_status = function (ccda) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var data, el;
-  
+
     var name = null,
         code = null,
         code_system = null,
         code_system_name = null,
         entry_date = null;
-  
+
     // We can parse all of the social_history sections,
     // but in practice, this section seems to be used for
     // smoking status, so we're just going to break that out.
     // And we're just looking for the first non-empty one.
     var social_history = ccda.section('social_history');
     var entries = social_history.entries();
-    for (var i=0; i < entries.length; i++) {
+    for (var i = 0; i < entries.length; i++) {
       var entry = entries[i];
-  
+
       var smoking_status = entry.template('2.16.840.1.113883.10.20.22.4.78');
       if (smoking_status.isEmpty()) {
         smoking_status = entry.template('2.16.840.1.113883.10.22.4.78');
@@ -5035,21 +5118,21 @@ module.exports = function(doc) {
       if (smoking_status.isEmpty()) {
         continue;
       }
-  
+
       el = smoking_status.tag('effectiveTime');
       entry_date = parseDate(el.attr('value'));
-  
+
       el = smoking_status.tag('value');
       name = el.attr('displayName');
       code = el.attr('code');
       code_system = el.attr('codeSystem');
       code_system_name = el.attr('codeSystemName');
-  
+
       if (name) {
         break;
       }
     }
-  
+
     data = {
       date: entry_date,
       name: name,
@@ -5057,58 +5140,62 @@ module.exports = function(doc) {
       code_system: code_system,
       code_system_name: code_system_name
     };
-    
+
     return data;
-  };  
-}
+  };
+};
 
 /***/ }),
 /* 46 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDA vitals section
  */
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
 
   self.vitals = function (ccda) {
-    
+
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
     var vitals = ccda.section('vitals');
-  
-    var data = {}, el;
+
+    var data = {},
+        el;
     data.entries = [];
     data.displayName = "Vitals";
     data.templateId = vitals.tag('templateId').attr('root');
     data.text = vitals.tag('text').val(true);
-  
-    vitals.entries().each(function(entry) {
-      
+
+    vitals.entries().each(function (entry) {
+
       el = entry.tag('effectiveTime');
       var entry_date = parseDate(el.attr('value'));
-      
+
       var result;
       var results = entry.elsByTag('component');
       var results_data = [];
-      
+
       for (var i = 0; i < results.length; i++) {
         result = results[i];
-        
+
         el = result.tag('code');
         var name = el.attr('displayName'),
             code = el.attr('code'),
             code_system = el.attr('codeSystem'),
             code_system_name = el.attr('codeSystemName');
-        
+
         el = result.tag('value');
         var value = parseFloat(el.attr('value')),
             unit = el.attr('unit');
-        
+
         results_data.push({
           name: name,
           code: code,
@@ -5118,20 +5205,23 @@ module.exports = function(doc) {
           unit: unit
         });
       }
-      
+
       data.entries.push({
         date: entry_date,
         results: results_data
       });
     });
-    
+
     return data;
   };
-}
+};
 
 /***/ }),
 /* 47 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDAR2 document
@@ -5144,69 +5234,69 @@ var DocumentParser = __webpack_require__(48);
 var DemographicsParser = __webpack_require__(2);
 var HealthConcernsParser = __webpack_require__(4);
 
-module.exports = function(doc) {
-  var self = this;
-  self.doc = doc;
-  self.documentParser = new DocumentParser(self.doc);
-  self.demographicsParser = new DemographicsParser(self.doc);
-  self.healthConcernsParser = new HealthConcernsParser(self.doc);
+module.exports = function (doc) {
+    var self = this;
+    self.doc = doc;
+    self.documentParser = new DocumentParser(self.doc);
+    self.demographicsParser = new DemographicsParser(self.doc);
+    self.healthConcernsParser = new HealthConcernsParser(self.doc);
 
-  self.run = function (ccda) {    
-      var data = {};
-  
-      data.document              = self.documentParser.document(ccda);
-      data.demographics          = self.demographicsParser.demographics(ccda);
-      data.health_concerns_document  = self.healthConcernsParser.health_concerns_document(ccda);
-      data.json                  = Core.json;
-  
-      // Decorate each section with Title, templateId and text and adds missing sections
-      ParseGenericInfo(ccda, data);
-  
-      return data;
+    self.run = function (ccda) {
+        var data = {};
+
+        data.document = self.documentParser.document(ccda);
+        data.demographics = self.demographicsParser.demographics(ccda);
+        data.health_concerns_document = self.healthConcernsParser.health_concerns_document(ccda);
+        data.json = Core.json;
+
+        // Decorate each section with Title, templateId and text and adds missing sections
+        ParseGenericInfo(ccda, data);
+
+        return data;
     };
-}
-
+};
 
 /***/ }),
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 
 /*
  * Parser for the CCDAR2 document section
  */
 var Core = __webpack_require__(0);
 
-module.exports = function(doc) {
+module.exports = function (doc) {
   var self = this;
   self.doc = doc;
 
-  self.document = function (ccda) {    
+  self.document = function (ccda) {
     var parseDate = self.doc.parseDate;
     var parseName = self.doc.parseName;
     var parseAddress = self.doc.parseAddress;
-    var data = {}, el;
-  
+    var data = {},
+        el;
+
     var doc = ccda.section('document');
     var date = parseDate(doc.tag('effectiveTime').attr('value'));
     var title = Core.stripWhitespace(doc.tag('title').val());
-  
+
     // Parse Doc Type Info
-    var templates =  doc.elsByTag('templateId');
-  
+    var templates = doc.elsByTag('templateId');
+
     var rootTemplate = templates[0].attr('root');
     var secondTemplate;
-    if(templates.length >1)
-      secondTemplate = templates[1].attr('root');
-    else
-      secondTemplate = rootTemplate;
-  
+    if (templates.length > 1) secondTemplate = templates[1].attr('root');else secondTemplate = rootTemplate;
+
     var loinc = doc.tag('code').attr('code');
     var templateId = doc.tag('templateId').attr('root');
     var displayName = doc.tag('code').attr('displayName');
-  
+
     var nonXml = doc.tag('nonXMLBody');
     var nonXmlNodes = nonXml.el.childNodes;
-  
+
     var bodyType = "structured";
     var nonXmlBody = {
       type: "",
@@ -5215,7 +5305,7 @@ module.exports = function(doc) {
       rawText: "",
       reference: ""
     };
-    if(nonXmlNodes && nonXmlNodes.length > 0) {
+    if (nonXmlNodes && nonXmlNodes.length > 0) {
       bodyType = "unstructured";
       var text = nonXml.tag('text');
       var mediaType = "";
@@ -5223,16 +5313,16 @@ module.exports = function(doc) {
       var rawText = "";
       var reference = "";
       var type = "";
-  
+
       // We have an embedded doc
-      if(text && text.attr('mediaType')) {
+      if (text && text.attr('mediaType')) {
         mediaType = text.attr('mediaType');
         representation = text.attr('representation');
         rawText = text.val();
         type = "embedded";
       }
-  
-      if(text && !mediaType) {
+
+      if (text && !mediaType) {
         reference = text.tag('reference').attr('value');
         type = "reference";
       }
@@ -5242,9 +5332,9 @@ module.exports = function(doc) {
         representation: representation,
         rawText: rawText,
         reference: reference
-      }
+      };
     }
-  
+
     var docType = {
       type: "CCDAR2",
       rootTemplateId: rootTemplate,
@@ -5254,17 +5344,17 @@ module.exports = function(doc) {
       bodyType: bodyType,
       nonXmlBody: nonXmlBody
     };
-  
+
     var author = doc.tag('author');
     el = author.tag('assignedPerson').tag('name');
     var name_dict = parseName(el);
-  
+
     el = author.tag('addr');
     var address_dict = parseAddress(el);
-  
+
     el = author.tag('telecom');
     var work_phone = el.attr('value');
-  
+
     var documentation_of_list = [];
     var performers = doc.tag('documentationOf').elsByTag('performer');
     for (var i = 0; i < performers.length; i++) {
@@ -5280,17 +5370,17 @@ module.exports = function(doc) {
         address: performer_addr
       });
     }
-  
+
     el = doc.tag('encompassingEncounter').tag('location');
     var location_name = Core.stripWhitespace(el.tag('name').val());
     var location_addr_dict = parseAddress(el.tag('addr'));
-  
+
     var encounter_date = null;
     el = el.tag('effectiveTime');
     if (!el.isEmpty()) {
       encounter_date = parseDate(el.attr('value'));
     }
-  
+
     data = {
       type: docType,
       date: date,
@@ -5309,10 +5399,10 @@ module.exports = function(doc) {
         encounter_date: encounter_date
       }
     };
-  
+
     return data;
   };
-}
+};
 
 /***/ })
 /******/ ]);
