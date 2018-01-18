@@ -33,6 +33,23 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		module.l = true;
 /******/
 /******/ 		// Return the exports of the module
+/******/ 		(function (module) {
+/******/ 		  if (module.exports
+/******/ 		    && !module.exports.__esModule
+/******/ 		    && module.exports.default === undefined
+/******/ 		  ) {
+/******/ 		    if (module.exports.headers
+/******/ 		      && module.exports.headers.common
+/******/ 		      && module.exports.headers.common.Accept
+/******/ 		      && module.exports.adapter
+/******/ 		      && module.exports.transformRequest
+/******/ 		      && module.exports.transformResponse
+/******/ 		    ) {
+/******/ 		      return;
+/******/ 		    }
+/******/ 		    module.exports.default = module.exports;
+/******/ 		  }
+/******/ 		})(module);
 /******/ 		return module.exports;
 /******/ 	}
 /******/

@@ -1,5 +1,6 @@
 var path = require('path');
 var nodeExternals = require('webpack-node-externals');
+var FixDefaultImportPlugin  = require('webpack-fix-default-import-plugin');
 
 module.exports = {
     entry: {
@@ -29,5 +30,8 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+    plugins: [
+        new FixDefaultImportPlugin()
+    ]
 }
