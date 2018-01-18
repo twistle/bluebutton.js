@@ -1,5 +1,14 @@
-exports["bluebutton"] =
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["bluebutton"] = factory();
+	else
+		root["bluebutton"] = factory();
+})(this, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -24,23 +33,6 @@ exports["bluebutton"] =
 /******/ 		module.l = true;
 /******/
 /******/ 		// Return the exports of the module
-/******/ 		(function (module) {
-/******/ 		  if (module.exports
-/******/ 		    && !module.exports.__esModule
-/******/ 		    && module.exports.default === undefined
-/******/ 		  ) {
-/******/ 		    if (module.exports.headers
-/******/ 		      && module.exports.headers.common
-/******/ 		      && module.exports.headers.common.Accept
-/******/ 		      && module.exports.adapter
-/******/ 		      && module.exports.transformRequest
-/******/ 		      && module.exports.transformResponse
-/******/ 		    ) {
-/******/ 		      return;
-/******/ 		    }
-/******/ 		    module.exports.default = module.exports;
-/******/ 		  }
-/******/ 		})(module);
 /******/ 		return module.exports;
 /******/ 	}
 /******/
@@ -84,9 +76,6 @@ exports["bluebutton"] =
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * ...
@@ -214,10 +203,7 @@ function trim(o) {
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /* Parses out basic data about each section */
 
@@ -277,9 +263,6 @@ module.exports = function (ccda, data) {
 /***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the CCDA demographics section
@@ -391,10 +374,7 @@ module.exports = function (doc) {
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 module.exports = {
     stripWhitespace: stripWhitespace
@@ -409,10 +389,7 @@ function stripWhitespace(str) {
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * Parser for the CCDAR2 Health Concerns Section
@@ -588,10 +565,7 @@ module.exports = function (source, opts) {
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * ...
@@ -1116,9 +1090,6 @@ module.exports = {
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * ...
  */
@@ -1424,7 +1395,7 @@ function parse(data) {
 };
 
 // Establish the root object, `window` in the browser, or `global` in Node.
-var root = undefined,
+var root = this,
     xmldom,
     isNode = false,
     doc = root.document; // Will be `undefined` if we're in Node
@@ -1451,9 +1422,6 @@ module.exports = require("xmldom");
 /***/ }),
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
   * ...
@@ -1653,10 +1621,7 @@ function parseAddress(addrEl) {
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * ...
@@ -1755,10 +1720,7 @@ module.exports = function (getEntries) {
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * ...
@@ -1815,10 +1777,7 @@ module.exports = function (getEntries) {
 
 /***/ }),
 /* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * ...
@@ -1935,10 +1894,7 @@ module.exports = function (getEntries) {
 
 /***/ }),
 /* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * ...
@@ -1997,9 +1953,6 @@ module.exports = function (getEntries) {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * ...
  */
@@ -2023,7 +1976,7 @@ module.exports = {
     ejs = require("ejs");
   }
 }
-  if (typeof ejs !== 'undefined') {
+ if (typeof ejs !== 'undefined') {
   /* Filters are automatically available to ejs to be used like "... | hl7Date"
    * Helpers are functions that we'll manually pass in to ejs.
    * The intended distinction is that a helper gets called with regular function-call syntax
@@ -2039,7 +1992,7 @@ module.exports = {
         if (obj === null || obj === undefined) { return 'nullFlavor="UNK"'; }
         var date = new Date(obj);
         if (isNaN(date.getTime())) { return obj; }
-          var dateStr = null;
+         var dateStr = null;
         if (date.getHours() || date.getMinutes() || date.getSeconds()) {
           // If there's a meaningful time, output a UTC datetime
           dateStr = date.getUTCFullYear() +
@@ -2085,7 +2038,7 @@ module.exports = {
       if (!obj.name && ! obj.code) {
       return 'nullFlavor="UNK"';
       }
-            return tag;
+           return tag;
       };
       ejs.filters.emptyStringIfFalsy = function(obj) {
       if (!obj) { return ''; }
@@ -2107,7 +2060,7 @@ module.exports = {
               '<postalCode nullFlavor="NI" />\n' +
               '<country nullFlavor="NI" />\n';
       }
-            var tags = '';
+           var tags = '';
       if (!addressDict.street.length) {
       tags += ejs.helpers.simpleTag('streetAddressLine', null) + '\n';
       } else {
@@ -2147,10 +2100,7 @@ module.exports = {
 
 /***/ }),
 /* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * ...
@@ -2172,9 +2122,6 @@ function run(json, template, testingMode) {
 /***/ }),
 /* 16 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * ...
@@ -2222,9 +2169,6 @@ module.exports = require("lodash");
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * ...
  */
@@ -2249,9 +2193,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 19 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the C32 document
@@ -2349,9 +2290,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the C32 allergies section
@@ -2478,9 +2416,6 @@ module.exports = function (doc) {
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * Parser for the C32 demographics section
  */
@@ -2591,9 +2526,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the C32 document section
@@ -2747,10 +2679,7 @@ module.exports = function (doc) {
 
 /***/ }),
 /* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * Parser for the C32 encounters section
@@ -2852,9 +2781,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the C32 immunizations section
@@ -2989,9 +2915,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 var Core = __webpack_require__(0);
 
@@ -3203,9 +3126,6 @@ module.exports = function (doc) {
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 var Core = __webpack_require__(0);
 
 /*
@@ -3295,9 +3215,6 @@ module.exports = function (doc) {
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * Parser for the C32 procedures section
  */
@@ -3383,9 +3300,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 28 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the C32 results (labs) section
@@ -3514,10 +3428,7 @@ module.exports = function (doc) {
 
 /***/ }),
 /* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * Parser for the C32 vitals section
@@ -3590,9 +3501,6 @@ module.exports = function (doc) {
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * Parser for the CCDAR2 document
  */
@@ -3604,33 +3512,30 @@ var DemographicsParser = __webpack_require__(2);
 var HealthConcernsParser = __webpack_require__(4);
 
 module.exports = function (doc) {
-    var self = this;
-    self.doc = doc;
-    self.documentParser = new DocumentParser(self.doc);
-    self.demographicsParser = new DemographicsParser(self.doc);
-    self.healthConcernsParser = new HealthConcernsParser(self.doc);
+  var self = this;
+  self.doc = doc;
+  self.documentParser = new DocumentParser(self.doc);
+  self.demographicsParser = new DemographicsParser(self.doc);
+  self.healthConcernsParser = new HealthConcernsParser(self.doc);
 
-    self.run = function (ccda) {
-        var data = {};
+  self.run = function (ccda) {
+    var data = {};
 
-        data.document = self.documentParser.document(ccda);
-        data.demographics = self.demographicsParser.demographics(ccda);
-        data.health_concerns_document = self.healthConcernsParser.health_concerns_document(ccda);
-        data.json = Core.json;
+    data.document = self.documentParser.document(ccda);
+    data.demographics = self.demographicsParser.demographics(ccda);
+    data.health_concerns_document = self.healthConcernsParser.health_concerns_document(ccda);
+    data.json = Core.json;
 
-        // Decorate each section with Title, templateId and text and adds missing sections
-        ParseGenericInfo(ccda, data);
+    // Decorate each section with Title, templateId and text and adds missing sections
+    ParseGenericInfo(ccda, data);
 
-        return data;
-    };
+    return data;
+  };
 };
 
 /***/ }),
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the CCDAR2 document section
@@ -3779,9 +3684,6 @@ module.exports = function (doc) {
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 var Core = __webpack_require__(0);
 var AllergiesParser = __webpack_require__(33);
 var CarePlanParser = __webpack_require__(34);
@@ -3872,9 +3774,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the CCDA allergies section
@@ -3993,9 +3892,6 @@ module.exports = function (doc) {
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * Parser for the CCDA "plan of care" section
  */
@@ -4067,9 +3963,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the CCDA document section
@@ -4216,10 +4109,7 @@ module.exports = function (doc) {
 
 /***/ }),
 /* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * Parser for the CCDA encounters section
@@ -4319,9 +4209,6 @@ module.exports = function (doc) {
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * Parser for any freetext section (i.e., contains just a single <text> element)
  */
@@ -4347,10 +4234,7 @@ module.exports = function () {
 
 /***/ }),
 /* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * Parser for the CCDA functional & cognitive status
@@ -4398,9 +4282,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the CCDA immunizations section
@@ -4535,9 +4416,6 @@ module.exports = function (doc) {
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * Parser for the CCDA "plan of care" section
  */
@@ -4581,9 +4459,6 @@ module.exports = function () {
 /***/ }),
 /* 41 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the CCDA medications section
@@ -4782,9 +4657,6 @@ module.exports = function (doc) {
 /* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * Parser for the CCDA problems section
  */
@@ -4868,9 +4740,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the CCDA procedures section
@@ -4956,9 +4825,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 44 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the CCDA results (labs) section
@@ -5076,10 +4942,7 @@ module.exports = function (doc) {
 
 /***/ }),
 /* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * Parser for the CCDA smoking status in social history section
@@ -5147,10 +5010,7 @@ module.exports = function (doc) {
 
 /***/ }),
 /* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+/***/ (function(module, exports) {
 
 /*
  * Parser for the CCDA vitals section
@@ -5220,9 +5080,6 @@ module.exports = function (doc) {
 /* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
 /*
  * Parser for the CCDAR2 document
  */
@@ -5259,9 +5116,6 @@ module.exports = function (doc) {
 /***/ }),
 /* 48 */
 /***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 
 /*
  * Parser for the CCDAR2 document section
@@ -5406,4 +5260,5 @@ module.exports = function (doc) {
 
 /***/ })
 /******/ ]);
+});
 //# sourceMappingURL=bluebutton.js.map
