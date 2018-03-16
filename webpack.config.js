@@ -3,6 +3,7 @@ var nodeExternals = require('webpack-node-externals');
 var FixDefaultImportPlugin  = require('webpack-fix-default-import-plugin');
 
 module.exports = {
+    mode: 'production',
     entry: {
         'bluebutton': "./lib/bluebutton.js"
     },
@@ -13,6 +14,9 @@ module.exports = {
         filename: "[name].js",
         library: "bluebutton",
         libraryTarget: "umd"
+    },
+    optimization: {
+        minimize: false
     },
     resolve: {
         extensions: ['.js']
