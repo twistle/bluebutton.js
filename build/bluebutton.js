@@ -4776,7 +4776,14 @@ var val = function val(html) {
   if (!this.el.childNodes || !this.el.childNodes.length) {
     return null;
   }
-  var textContent = html ? this.el.innerHTML : this.el.textContent;
+
+  var textContent;
+  if (html) {
+    textContent = this.el.innerHTML;
+    if (!textContent && root.XMLSerializer) textContent = new XMLSerializer().serializeToString(this.el);
+  } else {
+    textContent = this.el.textContent;
+  }
 
   // if there's no text value here and the only thing inside is a
   // <reference> tag, see if there's a linked <content> tag we can
