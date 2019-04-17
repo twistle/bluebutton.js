@@ -7,450 +7,450 @@ export declare class BlueButton {
 }
 
 export interface ParsedDocument {
-    json(): {};
-    document: Document;
-    allergies: Allergies;
-    care_plan: CarePlan;
-    chief_complaint: FreeText;
-    demographics: Demographics;
-    encounters: Encounters;
-    functional_statuses: FunctionalStatus[];
-    immunizations: Immunizations;
-    immunization_declines: ImmunizationDeclines;
-    instructions: Instruction[];
-    results: Results;
-    medications: Medications;
-    problems: Problems;
-    procedures: Procedures;
-    smoking_status: SmokingStatus;
-    vitals: Vitals;
+    json(): any;
+    document: Document | null;
+    allergies: Allergies | null;
+    care_plan: CarePlan | null;
+    chief_complaint: FreeText | null;
+    demographics: Demographics | null;
+    encounters: Encounters | null;
+    functional_statuses: FunctionalStatus[] | null;
+    immunizations: Immunizations | null;
+    immunization_declines: ImmunizationDeclines | null;
+    instructions: Instruction[] | null;
+    results: Results | null;
+    medications: Medications | null;
+    problems: Problems | null;
+    procedures: Procedures | null;
+    smoking_status: SmokingStatus | null;
+    vitals: Vitals | null;
 }
 
 export interface Document {
-    type: DocType;
-    date: Date;
-    title: string;
-    author: Author;
-    documentation_of: Documentation[];
-    location: Location;
+    type: DocType | null;
+    date: Date | null;
+    title: string | null;
+    author: Author | null;
+    documentation_of: Documentation[] | null;
+    location: Location | null;
 }
 
 export interface Allergies extends Section {
-    entries: AllergyEntry[];
+    entries: AllergyEntry[] | null;
 }
 
 export interface CarePlan extends Section {
-    entries: CarePlanEntry[];
+    entries: CarePlanEntry[] | null;
 }
 
 export interface FreeText {
-    json(): {};
-    text: string;
+    json(): any;
+    text: string | null;
 }
 
 export interface Demographics {
-    json(): {};
-    name: Name;
-    dob: Date;
-    gender: string;
-    marital_status: string;
-    address: Address;
-    phone: Telecom;
-    email: string;
-    language: string;
-    race: string;
-    ethnicity: string;
-    religion: string;
-    birthplace: Birthplace;
-    guardian: Guardian;
-    provider: Provider;
+    json(): any;
+    name: Name | null;
+    dob: Date | null;
+    gender: string | null;
+    marital_status: string | null;
+    address: Address | null;
+    phone: Telecom | null;
+    email: string | null;
+    language: string | null;
+    race: string | null;
+    ethnicity: string | null;
+    religion: string | null;
+    birthplace: Birthplace | null;
+    guardian: Guardian | null;
+    provider: Provider | null;
 }
 
 export interface Encounters extends Section {
-    entries: EncounterEntry[];
+    entries: EncounterEntry[] | null;
 }
 
 export interface Immunizations extends Section {
-    entries: ImmunizationEntry[];
+    entries: ImmunizationEntry[] | null;
 }
 
 export interface ImmunizationDeclines extends Section {
-    entries: ImmunizationEntry[];
+    entries: ImmunizationEntry[] | null;
 }
 
 export interface Results extends Section {
-    entries: ResultEntry[];
+    entries: ResultEntry[] | null;
 }
 
 export interface Medications extends Section {
-    entries: MedicationEntry[];
+    entries: MedicationEntry[] | null;
 }
 
 export interface Problems extends Section {
-    entries: ProblemEntry[];
+    entries: ProblemEntry[] | null;
 }
 
 export interface Procedures extends Section {
-    entries: ProcedureEntry[];
+    entries: ProcedureEntry[] | null;
 }
 
 export interface SmokingStatus {
-    date: Date;
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
+    date: Date | null;
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
 }
 
 export interface Vitals extends Section {
-    entries: VitalEntry[];
+    entries: VitalEntry[] | null;
 }
 
-interface VitalResult {
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
-    value: string;
-    unit: string;
+export interface VitalEntry {
+    date: Date | null;
+    results: VitalResult[] | null;
 }
 
-interface VitalEntry {
-    date: Date;
-    results: VitalResult[];
+export interface VitalResult {
+  name: string | null;
+  code: string | null;
+  code_system: string | null;
+  code_system_name: string | null;
+  value: string | null;
+  unit: string | null;
 }
 
-interface Device {
-    name: string;
-    code: string;
-    code_system: string;
+export interface ProcedureEntry {
+    date: Date | null;
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    specimen: Specimen | null;
+    performer: PerformerAddress | null;
+    device: Device | null;
 }
 
-interface PerformerAddress extends Address {
-    organization?: string;
-    phone?: string;
+export interface Specimen {
+  name: string | null;
+  code: string | null;
+  code_system: string | null;
 }
 
-interface Specimen {
-    name: string;
-    code: string;
-    code_system: string;
+export interface PerformerAddress extends Address {
+  organization?: string | null;
+  phone?: string | null;
 }
 
-interface ProcedureEntry {
-    date: Date;
-    name: string;
-    code: string;
-    code_system: string;
-    specimen: Specimen;
-    performer: PerformerAddress;
-    device: Device;
+export interface Device {
+  name: string | null;
+  code: string | null;
+  code_system: string | null;
 }
 
-interface ProblemEntry {
-    date_range: DateRange;
-    name: string;
-    status: string;
-    age: Number;
-    code: string;
-    code_system: string;
-    code_system_name: string;
-    translation: Translation;
-    comment: string;
+export interface ProblemEntry {
+    date_range: DateRange | null;
+    name: string | null;
+    status: string | null;
+    age: Number | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
+    translation: Translation | null;
+    comment: string | null;
 }
 
-interface Prescriber {
-    organization: string;
-    person: string | null;
+export interface Prescriber {
+    organization: string | null;
+    person: string | null | null;
 }
 
-interface Administration {
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
+export interface Administration {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
 }
 
-interface Vehicle {
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
+export interface Vehicle {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
 }
 
-interface Schedule {
-    type: string;
-    period_value: string;
-    period_unit: string;
+export interface Schedule {
+    type: string | null;
+    period_value: string | null;
+    period_unit: string | null;
 }
 
-interface Reason {
-    name: string;
-    code: string;
-    code_system: string;
+export interface Reason {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
 }
 
-interface Precondition {
-    name: string;
-    code: string;
-    code_system: string;
+export interface Precondition {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
 }
 
-interface RateQuantity {
-    value: string;
-    unit: string;
+export interface RateQuantity {
+    value: string | null;
+    unit: string | null;
 }
 
-interface MedicationProduct {
-    name: string;
-    code: string;
-    code_system: string;
-    text: string;
-    translation: Translation;
+export interface MedicationProduct {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    text: string | null;
+    translation: Translation | null;
 }
 
-interface MedicationEntry {
-    date_range: DateRange;
-    text: string;
-    product: MedicationProduct;
-    dose_quantity: DoseQuantity;
-    rate_quantity: RateQuantity;
-    precondition: Precondition;
-    reason: Reason;
-    route: CDARoute;
-    schedule: Schedule;
-    vehicle: Vehicle;
-    administration: Administration;
-    prescriber: Prescriber;
+export interface MedicationEntry {
+    date_range: DateRange | null;
+    text: string | null;
+    product: MedicationProduct | null;
+    dose_quantity: DoseQuantity | null;
+    rate_quantity: RateQuantity | null;
+    precondition: Precondition | null;
+    reason: Reason | null;
+    route: CDARoute | null;
+    schedule: Schedule | null;
+    vehicle: Vehicle | null;
+    administration: Administration | null;
+    prescriber: Prescriber | null;
 }
 
-interface ReferenceRange {
-    text: string;
-    low_unit: string;
-    low_value: string;
-    high_unit: string;
-    high_value: string;
+export interface ReferenceRange {
+    text: string | null;
+    low_unit: string | null;
+    low_value: string | null;
+    high_unit: string | null;
+    high_value: string | null;
 }
 
-interface Test {
-    date: Date;
-    name: string;
-    value: string;
-    unit: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
-    translation: Translation;
-    reference_range: ReferenceRange;
+export interface Test {
+    date: Date | null;
+    name: string | null;
+    value: string | null;
+    unit: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
+    translation: Translation | null;
+    reference_range: ReferenceRange | null;
 }
 
-interface ResultEntry {
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
-    tests: Test[];
+export interface ResultEntry {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
+    tests: Test[] | null;
 }
 
-interface Instruction {
-    text: string;
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
+export interface Instruction {
+    text: string | null;
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
 }
 
-interface ImmunizationEntry {
-    date: Date;
-    product: Product;
-    dose_quantity: DoseQuantity;
-    route: CDARoute;
-    instructions: string;
-    education_type: EducationType;
+export interface ImmunizationEntry {
+    date: Date | null;
+    product: Product | null;
+    dose_quantity: DoseQuantity | null;
+    route: CDARoute | null;
+    instructions: string | null;
+    education_type: EducationType | null;
 }
 
-interface EducationType {
-    name: string;
-    code: string;
-    code_system: string;
+export interface EducationType {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
 }
 
-interface CDARoute {
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
+export interface CDARoute {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
 }
 
-interface DoseQuantity {
-    value: string;
-    unit: string;
+export interface DoseQuantity {
+    value: string | null;
+    unit: string | null;
 }
 
-interface Product {
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
-    translation: Translation;
-    lot_number: string;
-    manufacturer_name: string;
+export interface Product {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
+    translation: Translation | null;
+    lot_number: string | null;
+    manufacturer_name: string | null;
 }
 
-interface AllergyEntry {
-    date_range: DateRange;
-    name: string;
-    code_system: string;
-    code_system_name: string;
-    status: string;
-    severity: string;
-    reaction: Sub;
-    reaction_type: Sub;
-    allergen: Sub;
+export interface AllergyEntry {
+    date_range: DateRange | null;
+    name: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
+    status: string | null;
+    severity: string | null;
+    reaction: Sub | null;
+    reaction_type: Sub | null;
+    allergen: Sub | null;
 }
 
-interface CarePlanEntry {
-    text: string;
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
-    effective_time: Date | null;
+export interface CarePlanEntry {
+    text: string | null;
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
+    effective_time: Date | null | null;
 }
 
-interface EncounterEntry {
-    date: Date;
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
-    code_system_version: string;
-    findings: Finding[];
-    translation: Translation;
-    performer: Performer;
-    location: Address;
+export interface EncounterEntry {
+    date: Date | null;
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
+    code_system_version: string | null;
+    findings: Finding[] | null;
+    translation: Translation | null;
+    performer: Performer | null;
+    location: Address | null;
 }
 
-interface FunctionalStatus {
-    date: Date;
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
+export interface FunctionalStatus {
+    date: Date | null;
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
 }
 
-interface Performer {
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
+export interface Performer {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
 }
 
-interface Translation {
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name: string;
+export interface Translation {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
 }
 
-interface Finding {
-    name: string;
-    code: string;
-    code_system: string;
+export interface Finding {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
 }
 
-interface DocType {
-    type: string;
-    rootTemplateId: string;
-    templateId: string;
-    displayName: string;
-    loinc: string;
-    bodyType: string;
-    nonXmlBody: NonXMLBody;
+export interface DocType {
+    type: string | null;
+    rootTemplateId: string | null;
+    templateId: string | null;
+    displayName: string | null;
+    loinc: string | null;
+    bodyType: string | null;
+    nonXmlBody: NonXMLBody | null;
 }
 
-interface NonXMLBody {
-    type: string;
-    mediaType: string;
-    representation: string;
-    rawText: string;
-    reference: string;
+export interface NonXMLBody {
+    type: string | null;
+    mediaType: string | null;
+    representation: string | null;
+    rawText: string | null;
+    reference: string | null;
 }
 
-interface Section {
-    json(): {};
-    displayName: string;
-    templateId: string;
-    text: string;
+export interface Section {
+    json(): any;
+    displayName: string | null;
+    templateId: string | null;
+    text: string | null;
 }
 
-interface Sub {
-    name: string;
-    code: string;
-    code_system: string;
-    code_system_name?: string;
+export interface Sub {
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name?: string | null;
 }
 
-interface DateRange {
-    start: Date;
-    end: Date;
+export interface DateRange {
+    start: Date | null;
+    end: Date | null;
 }
 
-interface Telecom {
-    home?: string | null;
-    work?: string | null;
-    mobile?: string | null;
+export interface Telecom {
+    home?: string | null | null;
+    work?: string | null | null;
+    mobile?: string | null | null;
 }
 
-interface Birthplace {
-    state: string;
-    zip: string;
-    country: string;
+export interface Birthplace {
+    state: string | null;
+    zip: string | null;
+    country: string | null;
 }
 
-interface Guardian {
-    name: Name;
-    relationship: string;
-    relationship_code: string;
-    address: Address;
-    phone: Telecom;
+export interface Guardian {
+    name: Name | null;
+    relationship: string | null;
+    relationship_code: string | null;
+    address: Address | null;
+    phone: Telecom | null;
 }
 
-interface Provider {
-    organization: string;
-    phone: string;
-    address: Address;
+export interface Provider {
+    organization: string | null;
+    phone: string | null;
+    address: Address | null;
 }
 
-interface Name {
-    prefix?: string;
-    given: string;
-    family: string;
+export interface Name {
+    prefix?: string | null;
+    given: string | null;
+    family: string | null;
 }
 
-interface Author {
-    name: string;
-    address: Address;
-    phone: Telecom;
+export interface Author {
+    name: string | null;
+    address: Address | null;
+    phone: Telecom | null;
 }
 
-interface Location {
-    name: string;
-    address: string;
-    encounter_date: Date;
-    organization?: string;
+export interface Location {
+    name: string | null;
+    address: string | null;
+    encounter_date: Date | null;
+    organization?: string | null;
 }
 
-interface Address {
-    street: string[];
-    city: string;
-    state: string;
-    zip: string;
-    country: string;
+export interface Address {
+    street: string[] | null;
+    city: string | null;
+    state: string | null;
+    zip: string | null;
+    country: string | null;
 }
 
-interface Documentation {
-    name: Name;
-    phone: Telecom;
-    address: Address;
+export interface Documentation {
+    name: Name | null;
+    phone: Telecom | null;
+    address: Address | null;
 }
