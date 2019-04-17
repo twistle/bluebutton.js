@@ -6,7 +6,7 @@
   "description": "BlueButton.js helps developers navigate complex health data with ease.",
   "author": "Remarkable Health",
   "main": "build/bluebutton.js",
-  "typings": "lib/bluebutton.d.ts",
+  "typings": "build/bluebutton.d.ts",
   "scripts": {
     "build": "webpack --display-modules",
     "test": "echo \"no tests specified\" && exit 0"
