@@ -1,6 +1,6 @@
-export declare class BlueButton {
-    constructor(data: string);
+export default function BlueButton(source: string, opts?: any): BlueButtonData;
 
+export interface BlueButtonData {
     type: string;
     data: ParsedDocument;
     source: any;
@@ -112,12 +112,12 @@ export interface VitalEntry {
 }
 
 export interface VitalResult {
-  name: string | null;
-  code: string | null;
-  code_system: string | null;
-  code_system_name: string | null;
-  value: string | null;
-  unit: string | null;
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
+    value: string | null;
+    unit: string | null;
 }
 
 export interface ProcedureEntry {
@@ -131,20 +131,20 @@ export interface ProcedureEntry {
 }
 
 export interface Specimen {
-  name: string | null;
-  code: string | null;
-  code_system: string | null;
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
 }
 
 export interface PerformerAddress extends Address {
-  organization?: string | null;
-  phone?: string | null;
+    organization?: string | null;
+    phone?: string | null;
 }
 
 export interface Device {
-  name: string | null;
-  code: string | null;
-  code_system: string | null;
+    name: string | null;
+    code: string | null;
+    code_system: string | null;
 }
 
 export interface ProblemEntry {
