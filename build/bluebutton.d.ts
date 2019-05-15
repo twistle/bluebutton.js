@@ -24,6 +24,8 @@ export interface ParsedDocument {
     procedures: Procedures | null;
     smoking_status: SmokingStatus | null;
     vitals: Vitals | null;
+    goals: Goals | null;
+    health_concerns_document: HealthConcerns
 }
 
 export interface Document {
@@ -38,6 +40,7 @@ export interface Document {
 export interface Allergies extends Section {
     entries: AllergyEntry[] | null;
 }
+
 
 export interface CarePlan extends Section {
     entries: CarePlanEntry[] | null;
@@ -308,6 +311,20 @@ export interface AllergyEntry {
     reaction_type: Sub | null;
     allergen: Sub | null;
 }
+export interface GoalsEntry {
+    date_range: DateRange | null;
+    name: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
+    status: string | null;
+}
+export interface HealthConcernsEntry {
+    date_range: DateRange | null;
+    name: string | null;
+    code_system: string | null;
+    code_system_name: string | null;
+    status: string | null;
+}
 
 export interface CarePlanEntry {
     text: string | null;
@@ -375,6 +392,14 @@ export interface NonXMLBody {
     representation: string | null;
     rawText: string | null;
     reference: string | null;
+}
+
+export interface Goals extends Section {
+    entries: GoalsEntry[] | null;
+}
+
+export interface HealthConcerns extends Section {
+    entries: HealthConcernsEntry[] | null;
 }
 
 export interface Section {
