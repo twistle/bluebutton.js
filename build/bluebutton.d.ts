@@ -472,6 +472,7 @@ export interface Address {
     state: string | null;
     zip: string | null;
     country: string | null;
+    organization: string | null;
 }
 
 export interface Documentation {
