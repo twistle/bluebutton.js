@@ -25,8 +25,9 @@ export interface ParsedDocument {
     smoking_status: SmokingStatus | null;
     vitals: Vitals | null;
     goals: Goals | null;
-    health_concerns_document: HealthConcerns;
+    health_concerns_document: HealthConcerns | null;
     medical_equipment: FreeText | null;
+    reason_for_referral: Section | null;
 }
 
 export interface Document {
