@@ -29,6 +29,7 @@ export interface ParsedDocument {
     medical_equipment: FreeText | null;
     reason_for_referral: Section | null;
     assessments: FreeText | null;
+    social_history: Section | null;
 }
 
 export interface Document {
