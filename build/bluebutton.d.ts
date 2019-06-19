@@ -483,11 +483,11 @@ export interface Documentation {
     name: Name | null;
     phone: Telecom | null;
     address: Address | null;
-    representedOrganization: PerformerOrganization;
+    representedOrganization: PerformerOrganization | null;
 }
 
 export interface PerformerOrganization {
-    name: Name | null;
-    phone: Telecom | null;
+    name: string | null;
+    phone: string | null;
     address: Address | null;
 }
