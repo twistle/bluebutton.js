@@ -1758,12 +1758,24 @@ module.exports = function (doc) {
       var performer_name_dict = parseName(el);
       var performer_phone = el.tag('telecom').attr('value');
       var performer_addr = parseAddress(el.tag('addr'));
+
+      var org = undefined;
+      var orgEl = el.tag('representedOrganization');
+      if (orgEl) {
+        org = {
+          name: orgEl.tag('name').val(),
+          phone: orgEl.tag('telecom').attr('value'),
+          address: parseAddress(orgEl.tag('addr'))
+        };
+      }
+
       documentation_of_list.push({
         name: performer_name_dict,
         phone: {
           work: performer_phone
         },
-        address: performer_addr
+        address: performer_addr,
+        representedOrganization: org
       });
     }
 
@@ -2242,25 +2254,25 @@ var DemographicsParser = __webpack_require__(2);
 var HealthConcernsParser = __webpack_require__(3);
 
 module.exports = function (doc) {
-    var self = this;
-    self.doc = doc;
-    self.documentParser = new DocumentParser(self.doc);
-    self.demographicsParser = new DemographicsParser(self.doc);
-    self.healthConcernsParser = new HealthConcernsParser(self.doc);
+  var self = this;
+  self.doc = doc;
+  self.documentParser = new DocumentParser(self.doc);
+  self.demographicsParser = new DemographicsParser(self.doc);
+  self.healthConcernsParser = new HealthConcernsParser(self.doc);
 
-    self.run = function (ccda) {
-        var data = {};
+  self.run = function (ccda) {
+    var data = {};
 
-        data.document = self.documentParser.document(ccda);
-        data.demographics = self.demographicsParser.demographics(ccda);
-        data.health_concerns_document = self.healthConcernsParser.health_concerns_document(ccda);
-        data.json = Core.json;
+    data.document = self.documentParser.document(ccda);
+    data.demographics = self.demographicsParser.demographics(ccda);
+    data.health_concerns_document = self.healthConcernsParser.health_concerns_document(ccda);
+    data.json = Core.json;
 
-        // Decorate each section with Title, templateId and text and adds missing sections
-        ParseGenericInfo(ccda, data);
+    // Decorate each section with Title, templateId and text and adds missing sections
+    ParseGenericInfo(ccda, data);
 
-        return data;
-    };
+    return data;
+  };
 };
 
 /***/ }),
@@ -3689,7 +3701,7 @@ module.exports = {
     ejs = require("ejs");
   }
 }
-  if (typeof ejs !== 'undefined') {
+ if (typeof ejs !== 'undefined') {
   /* Filters are automatically available to ejs to be used like "... | hl7Date"
    * Helpers are functions that we'll manually pass in to ejs.
    * The intended distinction is that a helper gets called with regular function-call syntax
@@ -3705,7 +3717,7 @@ module.exports = {
         if (obj === null || obj === undefined) { return 'nullFlavor="UNK"'; }
         var date = new Date(obj);
         if (isNaN(date.getTime())) { return obj; }
-          var dateStr = null;
+         var dateStr = null;
         if (date.getHours() || date.getMinutes() || date.getSeconds()) {
           // If there's a meaningful time, output a UTC datetime
           dateStr = date.getUTCFullYear() +
@@ -3751,7 +3763,7 @@ module.exports = {
       if (!obj.name && ! obj.code) {
       return 'nullFlavor="UNK"';
       }
-            return tag;
+           return tag;
       };
       ejs.filters.emptyStringIfFalsy = function(obj) {
       if (!obj) { return ''; }
@@ -3773,7 +3785,7 @@ module.exports = {
               '<postalCode nullFlavor="NI" />\n' +
               '<country nullFlavor="NI" />\n';
       }
-            var tags = '';
+           var tags = '';
       if (!addressDict.street.length) {
       tags += ejs.helpers.simpleTag('streetAddressLine', null) + '\n';
       } else {

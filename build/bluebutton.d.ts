@@ -483,4 +483,11 @@ export interface Documentation {
     name: Name | null;
     phone: Telecom | null;
     address: Address | null;
+    representedOrganization: PerformerOrganization;
+}
+
+export interface PerformerOrganization {
+    name: Name | null;
+    phone: Telecom | null;
+    address: Address | null;
 }
