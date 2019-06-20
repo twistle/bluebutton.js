@@ -13,7 +13,9 @@ module.exports = {
         path: path.resolve(__dirname, "build"),
         filename: "[name].js",
         library: "bluebutton",
-        libraryTarget: "umd"
+        libraryTarget: "umd",
+        umdNamedDefine: true,
+        globalObject: 'typeof self !== \'undefined\' ? self : this',
     },
     optimization: {
         minimize: false
