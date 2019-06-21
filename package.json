@@ -12,6 +12,7 @@
     "test": "echo \"no tests specified\" && exit 0"
   },
   "dependencies": {
+    "ejs": "^2.6.2",
     "lodash": "4.17.11",
     "xmldom": "0.1.27"
   },

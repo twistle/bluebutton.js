@@ -108,7 +108,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -119,8 +119,8 @@ return /******/ (function(modules) { // webpackBootstrap
  * ...
  */
 
-var Codes = __webpack_require__(6);
-var XML = __webpack_require__(7);
+var Codes = __webpack_require__(7);
+var XML = __webpack_require__(8);
 
 var _require = __webpack_require__(3),
     stripWhitespace = _require.stripWhitespace;
@@ -429,6 +429,12 @@ function stripWhitespace(str) {
 /* 4 */
 /***/ (function(module, exports) {
 
+module.exports = require("ejs");
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
 /*
  * Parser for the CCDAR2 Health Concerns Section
  * 2.16.840.1.113883.10.20.22.2.58
@@ -518,7 +524,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -529,11 +535,11 @@ module.exports = function (doc) {
 
 var Core = __webpack_require__(0);
 
-var Documents = __webpack_require__(10);
+var Documents = __webpack_require__(11);
 
-var Generators = __webpack_require__(15);
+var Generators = __webpack_require__(16);
 
-var Parsers = __webpack_require__(19);
+var Parsers = __webpack_require__(20);
 
 /* exported BlueButton */
 module.exports = function (source, opts) {
@@ -602,7 +608,7 @@ module.exports = function (source, opts) {
 };
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 /*
@@ -1125,7 +1131,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*
@@ -1450,17 +1456,17 @@ var root = isBrowser ? window : global,
 
 // Check if we're in Node. If so, pull in `xmldom` so we can simulate the DOM.
 if (isNode && !doc) {
-  xmldom = __webpack_require__(9);
+  xmldom = __webpack_require__(10);
   doc = new xmldom.DOMImplementation().createDocument();
 }
 
 module.exports = {
   parse: parse
 };
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(9)))
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 var g;
@@ -1486,22 +1492,22 @@ module.exports = g;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 module.exports = require("xmldom");
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
   * ...
   */
-var C32 = __webpack_require__(11);
-var CCD = __webpack_require__(12);
-var CCDA = __webpack_require__(13);
-var CCDAR2 = __webpack_require__(14);
+var C32 = __webpack_require__(12);
+var CCD = __webpack_require__(13);
+var CCDA = __webpack_require__(14);
+var CCDAR2 = __webpack_require__(15);
 
 module.exports = function () {
   var self = this;
@@ -1692,7 +1698,7 @@ function parseAddress(addrEl) {
 };
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 /*
@@ -1791,7 +1797,7 @@ module.exports = function (getEntries) {
 };
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 /*
@@ -1848,7 +1854,7 @@ module.exports = function (getEntries) {
 };
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /*
@@ -1965,7 +1971,7 @@ module.exports = function (getEntries) {
 };
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 /*
@@ -2022,15 +2028,15 @@ module.exports = function (getEntries) {
 };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
  * ...
  */
 
-var C32 = __webpack_require__(16);
-var CCDA = __webpack_require__(17);
+var C32 = __webpack_require__(17);
+var CCDA = __webpack_require__(18);
 
 var method = function method() {};
 
@@ -2043,135 +2049,150 @@ module.exports = {
 
 /* Import ejs if we're in Node. Then setup custom formatting filters
  */
-/*if (typeof exports !== 'undefined') {
-  if (typeof module !== 'undefined' && module.exports) {
-    ejs = require("ejs");
+if (true) {
+  if ( true && module.exports) {
+    ejs = __webpack_require__(4);
   }
 }
- if (typeof ejs !== 'undefined') {
+
+if (typeof ejs !== 'undefined') {
   /* Filters are automatically available to ejs to be used like "... | hl7Date"
    * Helpers are functions that we'll manually pass in to ejs.
    * The intended distinction is that a helper gets called with regular function-call syntax
-   */ /*
-      var pad = function(number) {
-      if (number < 10) {
+   */
+  var pad = function pad(number) {
+    if (number < 10) {
       return '0' + number;
+    }
+    return String(number);
+  };
+
+  if (!ejs.helpers) {
+    ejs.helpers = {};
+  }
+
+  ejs.helpers.hl7Date = function (obj) {
+    try {
+      if (obj === null || obj === undefined) {
+        return 'nullFlavor="UNK"';
       }
-      return String(number);
-      };
-      ejs.filters.hl7Date = function(obj) {
-      try {
-        if (obj === null || obj === undefined) { return 'nullFlavor="UNK"'; }
-        var date = new Date(obj);
-        if (isNaN(date.getTime())) { return obj; }
-         var dateStr = null;
-        if (date.getHours() || date.getMinutes() || date.getSeconds()) {
-          // If there's a meaningful time, output a UTC datetime
-          dateStr = date.getUTCFullYear() +
-            pad( date.getUTCMonth() + 1 ) +
-            pad( date.getUTCDate() );
-          var timeStr = pad( date.getUTCHours() ) +
-            pad( date.getUTCMinutes() ) +
-            pad ( date.getUTCSeconds() ) +
-            "+0000";
-          return 'value="' + dateStr + timeStr + '"';
-         
-        } else {
-          // If there's no time, don't apply timezone tranformations: just output a date
-          dateStr = String(date.getFullYear()) +
-            pad( date.getMonth() + 1 ) +
-            pad( date.getDate() );
-          return 'value="' + dateStr + '"';
-        }
-      } catch (e) {
+      var date = new Date(obj);
+      if (isNaN(date.getTime())) {
         return obj;
       }
-      };
-      var escapeSpecialChars = function(s) {
-      return s.replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/&/g, '&amp;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&apos;');
-      };
-      ejs.filters.hl7Code = function(obj) {
-      if (!obj) { return ''; }
-      var tag = '';
-      var name = obj.name || '';
-      if (obj.name) { tag += 'displayName="'+escapeSpecialChars(name)+'"'; }
-      if (obj.code) {
-      tag += ' code="'+obj.code+'"';
-      if (obj.code_system) { tag += ' codeSystem="'+escapeSpecialChars(obj.code_system)+'"'; }
-      if (obj.code_system_name) { tag += ' codeSystemName="' +
-                                      escapeSpecialChars(obj.code_system_name)+'"'; }
+
+      var dateStr = null;
+      if (date.getHours() || date.getMinutes() || date.getSeconds()) {
+        // If there's a meaningful time, output a UTC datetime
+        dateStr = date.getUTCFullYear() + pad(date.getUTCMonth() + 1) + pad(date.getUTCDate());
+        var timeStr = pad(date.getUTCHours()) + pad(date.getUTCMinutes()) + pad(date.getUTCSeconds()) + "+0000";
+        return 'value="' + dateStr + timeStr + '"';
       } else {
-      tag += ' nullFlavor="UNK"';
+        // If there's no time, don't apply timezone tranformations: just output a date
+        dateStr = String(date.getFullYear()) + pad(date.getMonth() + 1) + pad(date.getDate());
+        return 'value="' + dateStr + '"';
       }
-      if (!obj.name && ! obj.code) {
-      return 'nullFlavor="UNK"';
-      }
-           return tag;
-      };
-      ejs.filters.emptyStringIfFalsy = function(obj) {
-      if (!obj) { return ''; }
+    } catch (e) {
       return obj;
-      };
-      if (!ejs.helpers) ejs.helpers = {};
-      ejs.helpers.simpleTag = function(tagName, value) {
-      if (value) {
-      return "<"+tagName+">"+value+"</"+tagName+">";
-      } else {
-      return "<"+tagName+" nullFlavor=\"UNK\" />";
+    }
+  };
+
+  var escapeSpecialChars = function escapeSpecialChars(s) {
+    return s.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+  };
+
+  ejs.helpers.hl7Code = function (obj) {
+    if (!obj) {
+      return '';
+    }
+
+    var tag = '';
+    var name = obj.name || '';
+    if (obj.name) {
+      tag += 'displayName="' + escapeSpecialChars(name) + '"';
+    }
+
+    if (obj.code) {
+      tag += ' code="' + obj.code + '"';
+      if (obj.code_system) {
+        tag += ' codeSystem="' + escapeSpecialChars(obj.code_system) + '"';
       }
-      };
-      ejs.helpers.addressTags = function(addressDict) {
-      if (!addressDict) {
-      return '<streetAddressLine nullFlavor="NI" />\n' +
-              '<city nullFlavor="NI" />\n' +
-              '<state nullFlavor="NI" />\n' +
-              '<postalCode nullFlavor="NI" />\n' +
-              '<country nullFlavor="NI" />\n';
+      if (obj.code_system_name) {
+        tag += ' codeSystemName="' + escapeSpecialChars(obj.code_system_name) + '"';
       }
-           var tags = '';
-      if (!addressDict.street.length) {
+    } else {
+      tag += ' nullFlavor="UNK"';
+    }
+
+    if (!obj.name && !obj.code) {
+      return 'nullFlavor="UNK"';
+    }
+
+    return tag;
+  };
+
+  ejs.helpers.emptyStringIfFalsy = function (obj) {
+    if (!obj) {
+      return '';
+    }
+    return obj;
+  };
+
+  if (!ejs.helpers) ejs.helpers = {};
+  ejs.helpers.simpleTag = function (tagName, value) {
+    if (value) {
+      return "<" + tagName + ">" + value + "</" + tagName + ">";
+    } else {
+      return "<" + tagName + " nullFlavor=\"UNK\" />";
+    }
+  };
+
+  ejs.helpers.addressTags = function (addressDict) {
+    if (!addressDict) {
+      return '<streetAddressLine nullFlavor="NI" />\n' + '<city nullFlavor="NI" />\n' + '<state nullFlavor="NI" />\n' + '<postalCode nullFlavor="NI" />\n' + '<country nullFlavor="NI" />\n';
+    }
+
+    var tags = '';
+    if (!addressDict.street.length) {
       tags += ejs.helpers.simpleTag('streetAddressLine', null) + '\n';
-      } else {
-      for (var i=0; i<addressDict.street.length; i++) {
+    } else {
+      for (var i = 0; i < addressDict.street.length; i++) {
         tags += ejs.helpers.simpleTag('streetAddressLine', addressDict.street[i]) + '\n';
       }
-      }
-      tags += ejs.helpers.simpleTag('city', addressDict.city) + '\n';
-      tags += ejs.helpers.simpleTag('state', addressDict.state) + '\n';
-      tags += ejs.helpers.simpleTag('postalCode', addressDict.zip) + '\n';
-      tags += ejs.helpers.simpleTag('country', addressDict.country) + '\n';
-      return tags;
-      };
-      ejs.helpers.nameTags = function(nameDict) {
-      if (!nameDict) {
-      return '<given nullFlavor="NI" />\n' +
-              '<family nullFlavor="NI" />\n';
-      }
-      var tags = '';
-      if (nameDict.prefix) {
+    }
+    tags += ejs.helpers.simpleTag('city', addressDict.city) + '\n';
+    tags += ejs.helpers.simpleTag('state', addressDict.state) + '\n';
+    tags += ejs.helpers.simpleTag('postalCode', addressDict.zip) + '\n';
+    tags += ejs.helpers.simpleTag('country', addressDict.country) + '\n';
+    return tags;
+  };
+
+  ejs.helpers.nameTags = function (nameDict) {
+    if (!nameDict) {
+      return '<given nullFlavor="NI" />\n' + '<family nullFlavor="NI" />\n';
+    }
+
+    var tags = '';
+    if (nameDict.prefix) {
       tags += ejs.helpers.simpleTag('prefix', nameDict.prefix) + '\n';
-      }
-      if (!nameDict.given.length) {
+    }
+    if (!nameDict.given.length) {
       tags += ejs.helpers.simpleTag('given', null) + '\n';
-      } else {
-      for (var i=0; i<nameDict.given.length; i++) {
+    } else {
+      for (var i = 0; i < nameDict.given.length; i++) {
         tags += ejs.helpers.simpleTag('given', nameDict.given[i]) + '\n';
       }
-      }
-      tags += ejs.helpers.simpleTag('family', nameDict.family) + '\n';
-      if (nameDict.suffix) {
+    }
+    tags += ejs.helpers.simpleTag('family', nameDict.family) + '\n';
+    if (nameDict.suffix) {
       tags += ejs.helpers.simpleTag('suffix', nameDict.suffix) + '\n';
-      }
-      return tags;
-      };
-      }*/
+    }
+    return tags;
+  };
+}
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 /*
@@ -2192,13 +2213,15 @@ function run(json, template, testingMode) {
 };
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
  * ...
  */
-var _ = __webpack_require__(18);
+var _ = __webpack_require__(19);
+var ejs = __webpack_require__(4);
+var Core = __webpack_require__(0);
 
 module.exports = {
   run: run
@@ -2221,7 +2244,7 @@ function run(json, template, testingMode) {
   // in which case it's always Jan 1, 2000 at 12PM UTC
   var now = testingMode ? new Date('2000-01-01T12:00:00Z') : new Date();
 
-  var ccda = _.template(template, {
+  var ccda = ejs.render(template, {
     filename: 'ccda.xml',
     bb: json,
     now: now,
@@ -2232,22 +2255,22 @@ function run(json, template, testingMode) {
 };
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 module.exports = require("lodash");
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
  * ...
  */
-var C32 = __webpack_require__(20);
-var CCD = __webpack_require__(31);
-var CCDA = __webpack_require__(33);
-var CCDAR2 = __webpack_require__(48);
+var C32 = __webpack_require__(21);
+var CCD = __webpack_require__(32);
+var CCDA = __webpack_require__(34);
+var CCDAR2 = __webpack_require__(49);
 
 var method = function method() {};
 
@@ -2263,7 +2286,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -2271,16 +2294,16 @@ module.exports = function (doc) {
  */
 
 var Core = __webpack_require__(0);
-var AllergiesParser = __webpack_require__(21);
-var DemographicsParser = __webpack_require__(22);
-var DocumentParser = __webpack_require__(23);
-var EncountersParser = __webpack_require__(24);
-var ImmunizationsParser = __webpack_require__(25);
-var MedicationsParser = __webpack_require__(26);
-var ProblemsParser = __webpack_require__(27);
-var ProceduresParser = __webpack_require__(28);
-var ResultsParser = __webpack_require__(29);
-var VitalsParser = __webpack_require__(30);
+var AllergiesParser = __webpack_require__(22);
+var DemographicsParser = __webpack_require__(23);
+var DocumentParser = __webpack_require__(24);
+var EncountersParser = __webpack_require__(25);
+var ImmunizationsParser = __webpack_require__(26);
+var MedicationsParser = __webpack_require__(27);
+var ProblemsParser = __webpack_require__(28);
+var ProceduresParser = __webpack_require__(29);
+var ResultsParser = __webpack_require__(30);
+var VitalsParser = __webpack_require__(31);
 var ParseGenericInfo = __webpack_require__(1);
 
 module.exports = function (doc) {
@@ -2360,7 +2383,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -2485,7 +2508,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -2596,7 +2619,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -2750,7 +2773,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 /*
@@ -2851,7 +2874,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -2985,7 +3008,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core = __webpack_require__(0);
@@ -3195,7 +3218,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core = __webpack_require__(0);
@@ -3284,7 +3307,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -3370,7 +3393,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -3499,7 +3522,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 /*
@@ -3570,7 +3593,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -3579,9 +3602,9 @@ module.exports = function (doc) {
 
 var ParseGenericInfo = __webpack_require__(1);
 var Core = __webpack_require__(0);
-var DocumentParser = __webpack_require__(32);
+var DocumentParser = __webpack_require__(33);
 var DemographicsParser = __webpack_require__(2);
-var HealthConcernsParser = __webpack_require__(4);
+var HealthConcernsParser = __webpack_require__(5);
 
 module.exports = function (doc) {
   var self = this;
@@ -3606,7 +3629,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -3753,25 +3776,25 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Core = __webpack_require__(0);
-var AllergiesParser = __webpack_require__(34);
-var CarePlanParser = __webpack_require__(35);
+var AllergiesParser = __webpack_require__(35);
+var CarePlanParser = __webpack_require__(36);
 var DemographicsParser = __webpack_require__(2);
-var DocumentParser = __webpack_require__(36);
-var EncountersParser = __webpack_require__(37);
-var FreeTextParser = __webpack_require__(38);
-var FunctionalStatusesParser = __webpack_require__(39);
-var ImmunizationsParser = __webpack_require__(40);
-var InstructionsParser = __webpack_require__(41);
-var MedicationsParser = __webpack_require__(42);
-var ProblemsParser = __webpack_require__(43);
-var ProceduresParser = __webpack_require__(44);
-var ResultsParser = __webpack_require__(45);
-var SmokingStatusParser = __webpack_require__(46);
-var VitalsParser = __webpack_require__(47);
+var DocumentParser = __webpack_require__(37);
+var EncountersParser = __webpack_require__(38);
+var FreeTextParser = __webpack_require__(39);
+var FunctionalStatusesParser = __webpack_require__(40);
+var ImmunizationsParser = __webpack_require__(41);
+var InstructionsParser = __webpack_require__(42);
+var MedicationsParser = __webpack_require__(43);
+var ProblemsParser = __webpack_require__(44);
+var ProceduresParser = __webpack_require__(45);
+var ResultsParser = __webpack_require__(46);
+var SmokingStatusParser = __webpack_require__(47);
+var VitalsParser = __webpack_require__(48);
 
 var ParseGenericInfo = __webpack_require__(1);
 
@@ -3844,7 +3867,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -3961,7 +3984,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4033,7 +4056,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4192,7 +4215,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 /*
@@ -4290,7 +4313,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4317,7 +4340,7 @@ module.exports = function () {
 };
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 /*
@@ -4364,7 +4387,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4497,7 +4520,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4541,7 +4564,7 @@ module.exports = function () {
 };
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4738,7 +4761,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4822,7 +4845,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -4907,7 +4930,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -5025,7 +5048,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 /*
@@ -5093,7 +5116,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports) {
 
 /*
@@ -5161,7 +5184,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -5171,9 +5194,9 @@ module.exports = function (doc) {
 var ParseGenericInfo = __webpack_require__(1);
 var Core = __webpack_require__(0);
 
-var DocumentParser = __webpack_require__(49);
+var DocumentParser = __webpack_require__(50);
 var DemographicsParser = __webpack_require__(2);
-var HealthConcernsParser = __webpack_require__(4);
+var HealthConcernsParser = __webpack_require__(5);
 
 module.exports = function (doc) {
     var self = this;
@@ -5198,7 +5221,7 @@ module.exports = function (doc) {
 };
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
