@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "ejs": "^2.6.2",
-    "lodash": "4.17.15",
-    "xmldom": "0.1.27"
+    "lodash": ">=4.17.19",
+    "xmldom": ">=0.5.0"
   },
   "devDependencies": {
     "babel-core": "6.26.0",
